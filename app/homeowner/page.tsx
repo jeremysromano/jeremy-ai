@@ -14,7 +14,7 @@ import { ProgressRing } from '@/components/shared/ProgressRing'
 import { AnimatedNumber } from '@/components/shared/AnimatedNumber'
 import { InsightChip } from '@/components/shared/InsightChip'
 import { cardVariants, staggerVariants, chartVariants } from '@/lib/animations'
-import { MOCK_HOMEOWNER } from '@/lib/mock-data'
+import { MOCK_HOMEOWNER, MOCK_PROPERTIES } from '@/lib/mock-data'
 import { formatCurrency } from '@/lib/utils'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -478,14 +478,33 @@ export default function HomeownerPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                {[{ id: 'prop-2', price: '$549K' }, { id: 'prop-4', price: '$595K' }, { id: 'prop-6', price: '$720K' }].map(({ id, price }) => (
-                  <Link key={id} href={`/search/${id}`}
-                    className="flex-1 flex flex-col items-center gap-1 py-3 px-1 rounded-xl border border-[#B2EADC] bg-[#F0FBF8] hover:border-[#0F6E56] hover:bg-[#E6F7F3] transition-all">
-                    <svg width="22" height="20" viewBox="0 0 24 22" fill="none"><path d="M12 2L2 10V20H9V14H15V20H22V10L12 2Z" fill="#9FE1CB" stroke="#0F6E56" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/></svg>
-                    <span className="text-[11px] font-semibold text-[#0D1B2A]">{price}</span>
-                    <span className="text-[10px] font-medium text-[#059669]">Comfortable</span>
-                  </Link>
-                ))}
+                {(['prop-2', 'prop-4', 'prop-6'] as const).map((propId) => {
+                  const prop = MOCK_PROPERTIES.find(p => p.id === propId)
+                  if (!prop) return null
+                  return (
+                    <Link key={propId} href={`/search/${propId}`}
+                      className="flex-1 flex flex-col overflow-hidden rounded-xl border border-[#B2EADC] hover:border-[#0F6E56] hover:shadow-md transition-all group">
+                      {/* Photo */}
+                      <div className="w-full h-[72px] overflow-hidden">
+                        {prop.photo ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={prop.photo}
+                            alt={prop.address}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className={`w-full h-full bg-gradient-to-br ${prop.gradient}`} />
+                        )}
+                      </div>
+                      {/* Info */}
+                      <div className="bg-[#F0FBF8] group-hover:bg-[#E6F7F3] transition-colors px-2 py-2 text-center">
+                        <p className="text-[12px] font-bold text-[#0D1B2A] tabular-nums">${(prop.price / 1000).toFixed(0)}K</p>
+                        <p className="text-[10px] font-medium text-[#059669]">Comfortable</p>
+                      </div>
+                    </Link>
+                  )
+                })}
               </div>
               <div className="border-t border-[#F1F5F9]" />
               <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
