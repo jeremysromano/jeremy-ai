@@ -76,6 +76,14 @@ export default function HomeownerPage() {
   const yearsSaved = ((extraPayment / 100) * 0.65).toFixed(1)
   const interestSaved = extraPayment * 0.65 * 12 * 10
 
+  // Sell path calculations
+  const sellingCosts = Math.round(h.currentValue * 0.06)        // agent + closing ~6%
+  const netFromSale  = h.currentValue - h.loanBalance - sellingCosts  // ~$84K
+  const rentEstimate = 3_200
+  const monthlyShortfall   = rentEstimate - h.monthlyPayment    // negative (-$1,218)
+  const monthlyAppreciation = Math.round(h.currentValue * 0.04 / 12)  // ~$2,420
+  const netWealthPerMonth  = monthlyAppreciation + monthlyShortfall    // ~$1,202
+
   const equityChartData = h.equityHistory.map(p => ({
     label: p.label,
     'Home Value': p.homeValue,
@@ -471,10 +479,10 @@ export default function HomeownerPage() {
                 </div>
                 <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Move Up</p>
                 <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug mb-1">
-                  Your <span className="text-[#059669]">$128K equity</span> buys a $950K home
+                  Sell today → <span className="text-[#059669]">{formatCurrency(netFromSale, true)} down</span> on your next home
                 </p>
                 <p className="text-[12px] text-[#64748B] leading-relaxed">
-                  Roll your equity into a down payment. Three homes in your comfortable range right now.
+                  After paying off your loan and selling costs, you&apos;d net {formatCurrency(netFromSale, true)} — enough for ~15% down on these homes.
                 </p>
               </div>
               <div className="flex gap-2">
@@ -508,7 +516,12 @@ export default function HomeownerPage() {
               </div>
               <div className="border-t border-[#F1F5F9]" />
               <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
-                {[{ label: 'Net from sale', value: '$277K' }, { label: 'New buying power', value: '$950K' }, { label: 'Est. new payment', value: '$5,800/mo' }, { label: 'Timeline', value: '90–120 days' }].map(({ label, value }) => (
+                {[
+                  { label: 'Net from sale', value: formatCurrency(netFromSale, true) },
+                  { label: 'As down payment', value: `~${((netFromSale / 549000) * 100).toFixed(0)}% on $549K` },
+                  { label: 'Est. new payment', value: '$3,800/mo' },
+                  { label: 'Timeline', value: '90–120 days' },
+                ].map(({ label, value }) => (
                   <div key={label}>
                     <p className="text-[10px] text-[#94A3B8]">{label}</p>
                     <p className="text-[13px] font-bold text-[#0D1B2A] tabular-nums">{value}</p>
@@ -520,30 +533,83 @@ export default function HomeownerPage() {
               </Link>
             </div>
 
-            {/* Rent It */}
-            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-3">
+            {/* Keep & Rent — Sell vs. Keep decision card */}
+            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-4">
+              {/* Header */}
               <div>
-                <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] flex items-center justify-center mb-3">
-                  <Home size={16} className="text-[#059669]" />
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] flex items-center justify-center">
+                    <Home size={16} className="text-[#059669]" />
+                  </div>
+                  <span className="text-[10px] font-bold text-[#4F46E5] bg-[#EEF2FF] px-2 py-1 rounded-full border border-[#C7D2FE] uppercase tracking-wide">
+                    Sell or Keep?
+                  </span>
                 </div>
                 <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Keep & Rent</p>
-                <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug mb-1">
-                  Rent for <span className="text-[#059669]">$3,200/mo</span> — net $72/mo cash flow
-                </p>
-                <p className="text-[12px] text-[#64748B] leading-relaxed">
-                  Keep this home as an investment. Rent covers your mortgage with a small surplus, and you build equity on two properties simultaneously.
+                <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug">
+                  Sell for <span className="text-[#4F46E5]">{formatCurrency(netFromSale, true)} down</span> — or keep and build{' '}
+                  <span className="text-[#059669]">+{formatCurrency(netWealthPerMonth, true)}/mo</span> in wealth
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                {[{ label: 'Est. rent', value: '$3,200/mo' }, { label: 'Net cash flow', value: '+$72/mo', green: true }, { label: '10yr equity (both)', value: '2 props', green: true }, { label: 'Cap rate est.', value: '4.2%' }].map(({ label, value, green }) => (
-                  <div key={label} className={`p-2 rounded-xl border ${green ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
-                    <p className="text-[10px] text-[#94A3B8]">{label}</p>
-                    <p className={`text-[12px] font-bold tabular-nums ${green ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
+
+              {/* ── Path A: Sell today ── */}
+              <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <div className="w-1 h-3 rounded-full bg-[#4F46E5]" />
+                  <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">If you sold today</p>
+                </div>
+                <div className="space-y-1 mb-2.5">
+                  {[
+                    { label: 'Est. sale price', value: formatCurrency(h.currentValue), color: 'text-[#0D1B2A]' },
+                    { label: 'Selling costs (6%)', value: `−${formatCurrency(sellingCosts)}`, color: 'text-[#E11D48]' },
+                    { label: 'Loan payoff', value: `−${formatCurrency(h.loanBalance)}`, color: 'text-[#E11D48]' },
+                  ].map(({ label, value, color }) => (
+                    <div key={label} className="flex justify-between text-[11px]">
+                      <span className="text-[#64748B]">{label}</span>
+                      <span className={`font-semibold tabular-nums ${color}`}>{value}</span>
+                    </div>
+                  ))}
+                  <div className="border-t border-[#E2E8F0] pt-1.5 flex justify-between">
+                    <span className="text-[12px] font-bold text-[#0D1B2A]">Net in pocket</span>
+                    <span className="text-[12px] font-bold text-[#4F46E5] tabular-nums">{formatCurrency(netFromSale)}</span>
                   </div>
-                ))}
+                </div>
+                <div className="p-2 rounded-lg bg-[#EEF2FF] border border-[#C7D2FE]">
+                  <p className="text-[11px] font-semibold text-[#4F46E5]">
+                    → ~{((netFromSale / 549_000) * 100).toFixed(0)}% down on a $549K home · see Move Up ↑
+                  </p>
+                </div>
               </div>
-              <button className="mt-auto flex items-center gap-1 text-[12px] font-semibold text-[#059669] hover:text-[#047857] transition-colors">
-                Model rental <ArrowRight size={12} />
+
+              {/* ── Path B: Keep & Rent ── */}
+              <div className="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-3">
+                <div className="flex items-center gap-1.5 mb-2">
+                  <div className="w-1 h-3 rounded-full bg-[#059669]" />
+                  <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">If you kept & rented</p>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+                  {[
+                    { label: 'Monthly rent', value: `$${rentEstimate.toLocaleString()}` },
+                    { label: 'vs. mortgage cost', value: `−$${Math.abs(monthlyShortfall).toLocaleString()}/mo`, red: true },
+                    { label: 'Appreciation (~4%)', value: `+$${monthlyAppreciation.toLocaleString()}/mo`, green: true },
+                    { label: 'Cap rate est.', value: '4.2%' },
+                  ].map(({ label, value, green, red }) => (
+                    <div key={label} className="p-2 rounded-lg bg-white border border-[#E2E8F0]">
+                      <p className="text-[10px] text-[#94A3B8]">{label}</p>
+                      <p className={`text-[12px] font-bold tabular-nums ${green ? 'text-[#059669]' : red ? 'text-[#E11D48]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-2 rounded-lg bg-[#DCFCE7] border border-[#BBF7D0]">
+                  <p className="text-[11px] font-semibold text-[#166534]">
+                    Net wealth gain: <span className="text-[#059669]">+{formatCurrency(netWealthPerMonth, true)}/mo</span>
+                    {' '}— vs {formatCurrency(netFromSale, true)} lump from selling
+                  </p>
+                </div>
+              </div>
+
+              <button className="flex items-center gap-1 text-[12px] font-semibold text-[#059669] hover:text-[#047857] transition-colors">
+                Model rental scenario <ArrowRight size={12} />
               </button>
             </div>
 
