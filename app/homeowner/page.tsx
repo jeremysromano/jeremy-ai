@@ -1,16 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowRight, TrendingUp, TrendingDown, Wrench, Home, RefreshCw, DollarSign, Zap, ArrowUpRight, CreditCard, CheckCircle2, ChevronRight } from 'lucide-react'
-import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, ReferenceLine
-} from 'recharts'
+  ArrowRight, TrendingUp, Wrench, Home, RefreshCw, DollarSign,
+  Zap, ArrowUpRight, CreditCard, CheckCircle2, ChevronRight,
+  ChevronDown, TrendingDown, BarChart3, Calendar,
+} from 'lucide-react'
+import Link from 'next/link'
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { PageShell } from '@/components/layout/PageShell'
-import { SectionHeader } from '@/components/shared/SectionHeader'
-import { MetricCard } from '@/components/shared/MetricCard'
 import { ProgressRing } from '@/components/shared/ProgressRing'
 import { AnimatedNumber } from '@/components/shared/AnimatedNumber'
 import { InsightChip } from '@/components/shared/InsightChip'
@@ -18,17 +17,18 @@ import { cardVariants, staggerVariants, chartVariants } from '@/lib/animations'
 import { MOCK_HOMEOWNER } from '@/lib/mock-data'
 import { formatCurrency } from '@/lib/utils'
 
-const MAINTENANCE_ICONS: Record<string, React.FC<any>> = {
-  hvac: Wrench, plumbing: Wrench, roof: Home, landscaping: Wrench,
-  electrical: Zap, general: Home,
-}
+// ── Types ─────────────────────────────────────────────────────────────────────
 
+const MAINTENANCE_ICONS: Record<string, React.FC<any>> = {
+  hvac: Wrench, plumbing: Wrench, roof: Home,
+  landscaping: Wrench, electrical: Zap, general: Home,
+}
 const MONTH_NAMES = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white border border-[#E2E8F0] rounded-card-sm shadow-card-md p-3 text-[12px]">
+    <div className="bg-white border border-[#E2E8F0] rounded-[10px] shadow-lg p-3 text-[12px]">
       <p className="font-semibold text-[#0D1B2A] mb-1.5">{label}</p>
       {payload.map((p: any) => (
         <p key={p.name} className="flex items-center justify-between gap-4">
@@ -40,10 +40,29 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   )
 }
 
+// ── Sub-section label ─────────────────────────────────────────────────────────
+
+function GroupLabel({ children, signal }: { children: React.ReactNode; signal?: string }) {
+  return (
+    <div className="flex items-center gap-3 mb-4">
+      <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">{children}</p>
+      {signal && (
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#166534] text-[10px] font-bold border border-[#BBF7D0]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+          {signal}
+        </span>
+      )}
+    </div>
+  )
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function HomeownerPage() {
   const h = MOCK_HOMEOWNER
   const [extraPayment, setExtraPayment] = useState(200)
-  const currentMonth = 4 // April — 11 months since close
+  const [equityExpanded, setEquityExpanded] = useState(false)
+  const currentMonth = 4
 
   const upcomingMaintenance = h.maintenanceEvents
     .filter(e => e.status === 'upcoming')
@@ -54,9 +73,8 @@ export default function HomeownerPage() {
     .filter(e => e.status === 'upcoming')
     .reduce((s, e) => s + e.estimatedCost, 0)
 
-  // Extra payment analysis (rough: each ~$100 extra saves ~8 months)
   const yearsSaved = ((extraPayment / 100) * 0.65).toFixed(1)
-  const interestSaved = extraPayment * 0.65 * 12 * 10 // rough estimate
+  const interestSaved = extraPayment * 0.65 * 12 * 10
 
   const equityChartData = h.equityHistory.map(p => ({
     label: p.label,
@@ -65,17 +83,24 @@ export default function HomeownerPage() {
     'Your Equity': p.equity,
   }))
 
+  // Pay-off-by-60 math (rough)
+  const extraFor60 = 141
+  const interestSaved60 = 38000
+  const payoffDate60 = 'Mar 2051'
+
+  // HELOC numbers
+  const helocAvailable = 86000
+  const helocRate = 8.25
+  const helocMonthly = Math.round((helocAvailable * (helocRate / 100 / 12) * Math.pow(1 + helocRate / 100 / 12, 120)) / (Math.pow(1 + helocRate / 100 / 12, 120) - 1))
+
   return (
     <PageShell>
 
-      {/* ── Payment Banner ── */}
+      {/* ── 1. Payment Banner ── */}
       <motion.div
-        variants={cardVariants}
-        initial="initial"
-        animate="animate"
-        className="bg-white rounded-card border border-[#E2E8F0] shadow-card mb-8 overflow-hidden"
+        variants={cardVariants} initial="initial" animate="animate"
+        className="bg-white rounded-card border border-[#E2E8F0] shadow-card mb-6 overflow-hidden"
       >
-        {/* Banner header row */}
         <div className="px-6 py-4 border-b border-[#F1F5F9] flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[#EEF2FF] flex items-center justify-center shrink-0">
             <CreditCard size={14} className="text-[#4F46E5]" />
@@ -89,19 +114,13 @@ export default function HomeownerPage() {
             CURRENT
           </span>
         </div>
-
-        {/* Two-column payment status */}
         <div className="grid grid-cols-1 sm:grid-cols-2">
-          {/* Last payment — confirmed */}
           <div className="px-6 py-5 border-b sm:border-b-0 sm:border-r border-[#F1F5F9]">
             <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-3">Last Payment</p>
             <div className="flex items-end gap-3 mb-1">
-              <p className="text-[28px] font-bold text-[#0D1B2A] tabular-nums leading-none">
-                $4,418
-              </p>
+              <p className="text-[28px] font-bold text-[#0D1B2A] tabular-nums leading-none">$4,418</p>
               <span className="mb-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#166534] text-[10px] font-bold">
-                <CheckCircle2 size={9} />
-                PAID
+                <CheckCircle2 size={9} />PAID
               </span>
             </div>
             <p className="text-[13px] text-[#64748B]">Received March 1, 2026</p>
@@ -109,14 +128,10 @@ export default function HomeownerPage() {
               View payment history <ChevronRight size={12} />
             </button>
           </div>
-
-          {/* Next payment due — action area */}
-          <div className="relative px-6 py-5 bg-[#4F46E5]">
+          <div className="px-6 py-5 bg-[#4F46E5]">
             <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mb-3">Next Payment Due</p>
             <p className="text-[13px] text-white/70 mb-1">April 1, 2026</p>
-            <p className="text-[28px] font-bold text-white tabular-nums leading-none mb-5">
-              $4,418
-            </p>
+            <p className="text-[28px] font-bold text-white tabular-nums leading-none mb-5">$4,418</p>
             <button className="w-full py-2.5 rounded-xl bg-white text-[#4F46E5] text-[13px] font-bold hover:bg-[#EEF2FF] transition-colors">
               Make a Payment
             </button>
@@ -124,328 +139,455 @@ export default function HomeownerPage() {
         </div>
       </motion.div>
 
-      <SectionHeader
-        eyebrow="Homeowner Intelligence"
-        title="You closed. We keep watching."
-        subtitle="Equity, refinance signals, and homeownership guidance — all in one place."
-        className="mb-8"
-      />
-
-      {/* KPI bar */}
-      <motion.div
-        variants={staggerVariants} initial="initial" animate="animate"
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-      >
-        <MetricCard label="Current Home Value" value={h.currentValue} prefix="$" compact trend="up" trendLabel="+6%" />
-        <MetricCard label="Total Equity" value={h.totalEquity} prefix="$" compact trend="up" />
-        <MetricCard label="Loan-to-Value" value={h.ltv} suffix="%" sublabel="Below 80% → PMI drops" />
-        <MetricCard label="Years Remaining" value={h.yearsRemaining} decimals={1} sublabel="On current schedule" />
-      </motion.div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Equity growth chart — 2 cols */}
-        <motion.div variants={cardVariants} initial="initial" animate="animate"
-          className="lg:col-span-2 bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
-          <div className="flex items-start justify-between mb-1">
-            <div>
-              <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Equity Growth</p>
-              <p className="text-b-sm text-[#94A3B8] mt-0.5">Home value vs. loan balance over 30 years</p>
-            </div>
-            <div className="text-right">
-              <p className="text-l-sm text-[#64748B] uppercase tracking-wider">Current Equity</p>
-              <p className="text-d-md font-bold text-positive-600 tabular-nums">
-                <AnimatedNumber value={h.totalEquity} prefix="$" compact />
-              </p>
-            </div>
-          </div>
-          <motion.div variants={chartVariants} className="h-56 mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={equityChartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
-                <YAxis tickFormatter={v => `$${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 11, fill: '#94A3B8' }} axisLine={false} tickLine={false} width={50} />
-                <Tooltip content={<CustomTooltip />} />
-                <defs>
-                  <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#059669" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#059669" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="valueGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <Area dataKey="Home Value" type="monotone" stroke="#4F46E5" fill="url(#valueGrad)" strokeWidth={2} dot={false} isAnimationActive animationDuration={900} />
-                <Area dataKey="Loan Balance" type="monotone" stroke="#E2E8F0" fill="#F8FAFC" strokeWidth={2} dot={false} isAnimationActive animationDuration={900} />
-                <Area dataKey="Your Equity" type="monotone" stroke="#059669" fill="url(#equityGrad)" strokeWidth={2.5} dot={false} isAnimationActive animationDuration={900} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </motion.div>
-          <div className="flex items-center gap-4 mt-3">
+      {/* ── 2. Equity Summary — collapsible ── */}
+      <motion.div variants={cardVariants} initial="initial" animate="animate" className="mb-8">
+        {/* Summary strip — always visible */}
+        <button
+          onClick={() => setEquityExpanded(v => !v)}
+          className={`w-full flex items-center justify-between px-5 py-4 bg-white border border-[#E2E8F0] shadow-card hover:border-[#C7D2FE] transition-all ${equityExpanded ? 'rounded-t-card border-b-0' : 'rounded-card'}`}
+        >
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5">
             {[
-              { label: 'Home Value', color: '#4F46E5' },
-              { label: 'Loan Balance', color: '#CBD5E1' },
-              { label: 'Your Equity', color: '#059669' },
-            ].map(item => (
-              <div key={item.label} className="flex items-center gap-1.5 text-[12px] text-[#64748B]">
-                <div className="w-3 h-1 rounded" style={{ background: item.color }} />
-                {item.label}
+              { label: 'Home Value', value: '$726K', accent: '#4F46E5', tag: '+6%' },
+              { label: 'Equity',     value: '$128K', accent: '#059669', tag: 'Growing ↑' },
+              { label: 'LTV',        value: '82%',   accent: '#0D1B2A', sub: 'PMI drops at 80%' },
+              { label: 'Remaining',  value: '29.1 yrs', accent: '#0D1B2A' },
+            ].map(({ label, value, accent, tag, sub }) => (
+              <div key={label} className="flex items-baseline gap-1.5">
+                <span className="text-[11px] text-[#94A3B8]">{label}</span>
+                <span className="text-[15px] font-bold tabular-nums" style={{ color: accent }}>{value}</span>
+                {tag && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: accent === '#059669' ? '#DCFCE7' : '#EEF2FF', color: accent }}>{tag}</span>}
+                {sub && <span className="text-[10px] text-[#94A3B8] hidden sm:inline">· {sub}</span>}
               </div>
             ))}
           </div>
-        </motion.div>
-
-        {/* Equity snapshot + LTV ring */}
-        <div className="space-y-5">
-          <motion.div variants={cardVariants} initial="initial" animate="animate"
-            className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6 flex flex-col items-center gap-3">
-            <p className="text-l-sm uppercase tracking-widest text-[#64748B] w-full">Equity Position</p>
-            <ProgressRing value={h.equityPct} max={100} size={140} strokeWidth={12} color="#059669" trackColor="#E2E8F0">
-              <div className="text-center">
-                <p className="text-d-md font-bold text-positive-600 tabular-nums">
-                  <AnimatedNumber value={h.equityPct} suffix="%" />
-                </p>
-                <p className="text-b-sm text-[#64748B]">Equity</p>
-              </div>
-            </ProgressRing>
-            <div className="w-full grid grid-cols-2 gap-2 text-center">
-              <div className="p-2 bg-[#F8FAFC] rounded-card-sm border border-[#E2E8F0]">
-                <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">Own</p>
-                <p className="text-d-xs font-bold text-positive-600 tabular-nums">{formatCurrency(h.totalEquity, true)}</p>
-              </div>
-              <div className="p-2 bg-[#F8FAFC] rounded-card-sm border border-[#E2E8F0]">
-                <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">Owe</p>
-                <p className="text-d-xs font-bold text-[#0D1B2A] tabular-nums">{formatCurrency(h.loanBalance, true)}</p>
-              </div>
-            </div>
-            <InsightChip text="At 4% annual appreciation, you'll reach 30% equity in approximately 4 years." />
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Second row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Refinance watch */}
-        <motion.div variants={cardVariants} initial="initial" animate="animate"
-          className={`bg-white rounded-card border shadow-card p-6 ${
-            h.monthlyPotentialSavings >= 300 ? 'border-positive-300 ring-1 ring-positive-100' :
-            h.monthlyPotentialSavings >= 100 ? 'border-caution-300' : 'border-[#E2E8F0]'
-          }`}>
-          <div className="flex items-center gap-2 mb-4">
-            <RefreshCw size={16} className={h.monthlyPotentialSavings >= 300 ? 'text-positive-600' : 'text-caution-500'} />
-            <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Refinance Watch</p>
-            {h.monthlyPotentialSavings >= 300 && (
-              <span className="ml-auto px-2 py-0.5 rounded-pill bg-positive-50 text-positive-700 text-[11px] font-bold border border-positive-200">
-                Signal Active
-              </span>
-            )}
+          <div className="shrink-0 ml-4 flex items-center gap-1.5 text-[12px] font-semibold text-[#4F46E5]">
+            {equityExpanded ? 'Hide' : 'See details'}
+            <ChevronDown size={14} className={`transition-transform duration-200 ${equityExpanded ? 'rotate-180' : ''}`} />
           </div>
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="p-3 bg-[#F8FAFC] rounded-card-sm border border-[#E2E8F0]">
-              <p className="text-[11px] text-[#94A3B8] uppercase tracking-wider mb-1">Your Rate</p>
-              <p className="text-d-sm font-bold text-[#0D1B2A] tabular-nums">{h.originalRate.toFixed(3)}%</p>
-            </div>
-            <div className="p-3 bg-positive-50 rounded-card-sm border border-positive-200">
-              <p className="text-[11px] text-positive-700 uppercase tracking-wider mb-1">Market Today</p>
-              <p className="text-d-sm font-bold text-positive-600 tabular-nums">{h.currentMarketRate.toFixed(3)}%</p>
-            </div>
-          </div>
-          <div className="p-4 rounded-card-sm bg-positive-50 border border-positive-200 mb-4">
-            <p className="text-[11px] text-positive-700 uppercase tracking-wider mb-1">Potential Monthly Savings</p>
-            <p className="text-d-lg font-bold text-positive-600 tabular-nums">
-              <AnimatedNumber value={h.monthlyPotentialSavings} prefix="$" suffix="/mo" />
-            </p>
-            <p className="text-b-sm text-positive-700 mt-0.5">{formatCurrency(h.monthlyPotentialSavings * 12)}/year · {formatCurrency(h.monthlyPotentialSavings * 12 * 20)} over 20yr</p>
-          </div>
-          <button className="w-full flex items-center justify-center gap-2 py-2.5 bg-positive-600 text-white rounded-btn text-b-sm font-semibold hover:bg-positive-700 transition-colors">
-            Explore Refinance <ArrowUpRight size={14} />
-          </button>
-        </motion.div>
+        </button>
 
-        {/* Extra payment optimizer */}
-        <motion.div variants={cardVariants} initial="initial" animate="animate"
-          className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={16} className="text-brand-600" />
-            <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Payment Optimizer</p>
-          </div>
-          <p className="text-b-sm text-[#64748B] mb-4">What if you paid a little more each month?</p>
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-l-md text-[#64748B] uppercase tracking-wider">Extra Monthly</span>
-              <span className="text-d-xs font-bold text-[#0D1B2A] tabular-nums">
-                +<AnimatedNumber value={extraPayment} prefix="$" />
-              </span>
-            </div>
-            <input
-              type="range" min={0} max={1000} step={50}
-              value={extraPayment}
-              onChange={e => setExtraPayment(parseInt(e.target.value))}
-              className="w-full h-1.5 rounded-pill appearance-none bg-[#E2E8F0] cursor-pointer accent-brand-600"
-            />
-            <div className="flex justify-between mt-0.5 text-[10px] text-[#94A3B8]">
-              <span>$0</span><span>$1,000</span>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between p-3 bg-brand-50 rounded-card-sm border border-brand-100">
-              <span className="text-b-sm text-brand-700">Years saved</span>
-              <span className="text-d-xs font-bold text-brand-600 tabular-nums">{yearsSaved} yrs</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-positive-50 rounded-card-sm border border-positive-100">
-              <span className="text-b-sm text-positive-700">Interest saved</span>
-              <span className="text-d-xs font-bold text-positive-600 tabular-nums">{formatCurrency(interestSaved, true)}</span>
-            </div>
-          </div>
-          <InsightChip
-            text={extraPayment > 0
-              ? `${formatCurrency(extraPayment)}/mo extra could save you ${yearsSaved} years and ${formatCurrency(interestSaved, true)} in interest.`
-              : 'Move the slider to see the impact of extra payments.'
-            }
-            className="mt-3"
-          />
-        </motion.div>
-
-        {/* Maintenance calendar */}
-        <motion.div variants={cardVariants} initial="initial" animate="animate"
-          className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Wrench size={15} className="text-[#64748B]" />
-              <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Maintenance</p>
-            </div>
-            <span className="text-b-sm font-semibold text-[#0D1B2A] tabular-nums">{formatCurrency(totalMaintenanceCost)} projected</span>
-          </div>
-          <div className="space-y-3">
-            {upcomingMaintenance.map(event => {
-              const Icon = MAINTENANCE_ICONS[event.category] ?? Wrench
-              const isUrgent = event.month <= currentMonth + 1
-              return (
-                <div key={event.id} className={`flex items-start gap-3 p-3 rounded-card-sm border ${
-                  isUrgent ? 'bg-caution-50 border-caution-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
-                }`}>
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                    isUrgent ? 'bg-caution-100' : 'bg-white border border-[#E2E8F0]'
-                  }`}>
-                    <Icon size={14} className={isUrgent ? 'text-caution-600' : 'text-[#94A3B8]'} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-b-sm font-semibold text-[#0D1B2A] truncate">{event.label}</p>
-                      <span className="shrink-0 text-b-sm font-bold text-[#0D1B2A] tabular-nums">{formatCurrency(event.estimatedCost)}</span>
-                    </div>
-                    <p className={`text-[11px] mt-0.5 ${isUrgent ? 'text-caution-600 font-semibold' : 'text-[#94A3B8]'}`}>
-                      {MONTH_NAMES[event.month]} {isUrgent ? '— due soon' : ''}
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Scenario prompts */}
-      <motion.div variants={cardVariants} initial="initial" animate="animate"
-        className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
-        <p className="text-l-sm uppercase tracking-widest text-[#64748B] mb-2">Life Scenario Planning</p>
-        <p className="text-b-sm text-[#94A3B8] mb-5">Big decisions start with the right numbers.</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-          {/* ── Move Up card (enhanced) ── */}
-          <div className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] flex flex-col gap-4">
-            {/* Header */}
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-[#E6F7F3] flex items-center justify-center mb-3">
-                <ArrowUpRight size={20} className="text-[#0F6E56]" />
-              </div>
-              <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Move Up</p>
-              <p className="text-[16px] font-bold text-[#0D1B2A] leading-snug mb-1">
-                Your <span className="text-[#059669]">$128K equity</span> buys a $950K home
-              </p>
-              <p className="text-[13px] text-[#64748B] leading-relaxed">
-                Roll your equity into a down payment. Three homes in your comfortable range right now.
-              </p>
-            </div>
-
-            {/* Home chips */}
-            <div className="flex gap-2">
-              {[
-                { id: 'prop-2', price: '$549K' },
-                { id: 'prop-4', price: '$595K' },
-                { id: 'prop-6', price: '$720K' },
-              ].map(({ id, price }) => (
-                <Link
-                  key={id}
-                  href={`/search/${id}`}
-                  className="flex-1 flex flex-col items-center gap-1 py-3 px-2 rounded-xl border border-[#B2EADC] bg-[#F0FBF8] hover:border-[#0F6E56] hover:bg-[#E6F7F3] transition-all"
-                >
-                  {/* House SVG */}
-                  <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 10V20H9V14H15V20H22V10L12 2Z" fill="#9FE1CB" stroke="#0F6E56" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
-                  </svg>
-                  <span className="text-[12px] font-semibold text-[#0D1B2A]">{price}</span>
-                  <span className="text-[10px] font-medium text-[#059669]">Comfortable</span>
-                </Link>
-              ))}
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-[#E2E8F0]" />
-
-            {/* Stat grid */}
-            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-              {[
-                { label: 'Net from sale',       value: '$277K' },
-                { label: 'New buying power',     value: '$950K' },
-                { label: 'Est. new payment',     value: '$5,800/mo' },
-                { label: 'Timeline',             value: '90–120 days' },
-              ].map(({ label, value }) => (
-                <div key={label}>
-                  <p className="text-[11px] text-[#94A3B8]">{label}</p>
-                  <p className="text-[14px] font-bold text-[#0D1B2A] tabular-nums">{value}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <Link
-              href="/search"
-              className="text-[13px] font-semibold text-[#059669] hover:text-[#0F6E56] flex items-center gap-1 transition-colors"
+        {/* Expanded equity content */}
+        <AnimatePresence>
+          {equityExpanded && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+              className="overflow-hidden"
             >
-              See all homes in range <ArrowUpRight size={13} />
-            </Link>
-          </div>
+              <div className="bg-white border border-t-0 border-[#E2E8F0] rounded-b-card p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Chart — 2 cols */}
+                  <div className="lg:col-span-2">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-widest">Equity Growth</p>
+                        <p className="text-[12px] text-[#94A3B8] mt-0.5">Home value vs. loan balance over 30 years</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[11px] text-[#94A3B8] uppercase tracking-wider">Current Equity</p>
+                        <p className="text-[22px] font-bold text-[#059669] tabular-nums">
+                          <AnimatedNumber value={h.totalEquity} prefix="$" compact />
+                        </p>
+                      </div>
+                    </div>
+                    <motion.div variants={chartVariants} className="h-48">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={equityChartData} margin={{ top: 4, right: 4, left: 4, bottom: 4 }}>
+                          <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
+                          <YAxis tickFormatter={v => `$${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} width={46} />
+                          <Tooltip content={<CustomTooltip />} />
+                          <defs>
+                            <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#059669" stopOpacity={0.15} />
+                              <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="valueGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.1} />
+                              <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <Area dataKey="Home Value" type="monotone" stroke="#4F46E5" fill="url(#valueGrad)" strokeWidth={2} dot={false} />
+                          <Area dataKey="Loan Balance" type="monotone" stroke="#E2E8F0" fill="#F8FAFC" strokeWidth={2} dot={false} />
+                          <Area dataKey="Your Equity" type="monotone" stroke="#059669" fill="url(#equityGrad)" strokeWidth={2.5} dot={false} />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </motion.div>
+                    <div className="flex items-center gap-4 mt-2">
+                      {[{ label: 'Home Value', color: '#4F46E5' }, { label: 'Loan Balance', color: '#CBD5E1' }, { label: 'Your Equity', color: '#059669' }].map(item => (
+                        <div key={item.label} className="flex items-center gap-1.5 text-[11px] text-[#64748B]">
+                          <div className="w-3 h-1 rounded" style={{ background: item.color }} />
+                          {item.label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-          {/* ── Rent It card (unchanged) ── */}
-          <div className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] hover:border-brand-200 hover:shadow-card-md transition-all cursor-pointer group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: '#05966915' }}>
-              <DollarSign size={20} style={{ color: '#059669' }} />
-            </div>
-            <p className="text-b-md font-bold text-[#0D1B2A] mb-1">Rent It?</p>
-            <p className="text-b-sm text-[#64748B] mb-3 leading-relaxed">
-              This home could rent for ~$3,200/mo. Net cash flow: ~$680/mo after expenses.
-            </p>
-            <p className="text-b-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all text-[#059669]">
-              Explore rental analysis <ArrowRight size={14} />
-            </p>
-          </div>
-
-          {/* ── Remodel card (unchanged) ── */}
-          <div className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] hover:border-brand-200 hover:shadow-card-md transition-all cursor-pointer group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: '#D9770615' }}>
-              <Wrench size={20} style={{ color: '#D97706' }} />
-            </div>
-            <p className="text-b-md font-bold text-[#0D1B2A] mb-1">Remodel?</p>
-            <p className="text-b-sm text-[#64748B] mb-3 leading-relaxed">
-              A kitchen remodel adds 12–15% value on average. ROI at current equity: strong.
-            </p>
-            <p className="text-b-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all text-[#D97706]">
-              See remodel ROI <ArrowRight size={14} />
-            </p>
-          </div>
-
-        </div>
+                  {/* Equity position ring */}
+                  <div className="flex flex-col items-center gap-3 pt-2">
+                    <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-widest w-full">Equity Position</p>
+                    <ProgressRing value={h.equityPct} max={100} size={130} strokeWidth={11} color="#059669" trackColor="#E2E8F0">
+                      <div className="text-center">
+                        <p className="text-[20px] font-bold text-[#059669] tabular-nums">
+                          <AnimatedNumber value={h.equityPct} suffix="%" />
+                        </p>
+                        <p className="text-[11px] text-[#64748B]">Equity</p>
+                      </div>
+                    </ProgressRing>
+                    <div className="w-full grid grid-cols-2 gap-2 text-center">
+                      <div className="p-2 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
+                        <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">Own</p>
+                        <p className="text-[15px] font-bold text-[#059669] tabular-nums">{formatCurrency(h.totalEquity, true)}</p>
+                      </div>
+                      <div className="p-2 bg-[#F8FAFC] rounded-xl border border-[#E2E8F0]">
+                        <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">Owe</p>
+                        <p className="text-[15px] font-bold text-[#0D1B2A] tabular-nums">{formatCurrency(h.loanBalance, true)}</p>
+                      </div>
+                    </div>
+                    <InsightChip text="At 4% annual appreciation, you'll reach 30% equity in ~4 years." />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
+
+      {/* ── 3. Strategy Center ── */}
+      <div className="space-y-10">
+
+        {/* ── Group A: Market Signals ── */}
+        <motion.section variants={cardVariants} initial="initial" animate="animate">
+          <GroupLabel signal="2 signals active">Market Signals</GroupLabel>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {/* Refi Watch — upgraded */}
+            <div className="bg-white rounded-card border-2 border-[#059669] shadow-card p-5 flex flex-col gap-4" style={{ boxShadow: '0 0 0 4px rgba(5,150,105,0.06), 0 2px 8px rgba(0,0,0,0.06)' }}>
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] flex items-center justify-center">
+                    <RefreshCw size={16} className="text-[#059669]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Refinance</p>
+                    <p className="text-[13px] font-bold text-[#0D1B2A]">Rate drop signal</p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#166534] text-[10px] font-bold border border-[#BBF7D0]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse" />
+                  SIGNAL ACTIVE
+                </span>
+              </div>
+
+              <div>
+                <p className="text-[22px] font-bold text-[#059669] tabular-nums leading-none">
+                  Save <AnimatedNumber value={h.monthlyPotentialSavings} prefix="$" suffix="/mo" />
+                </p>
+                <p className="text-[12px] text-[#64748B] mt-1">
+                  {formatCurrency(h.monthlyPotentialSavings * 12)}/yr · {formatCurrency(h.monthlyPotentialSavings * 12 * 20)} over 20 years
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'Your rate', value: `${h.originalRate.toFixed(3)}%`, neutral: true },
+                  { label: 'Market today', value: `${h.currentMarketRate.toFixed(3)}%`, green: true },
+                  { label: 'Rate spread', value: `−${(h.originalRate - h.currentMarketRate).toFixed(2)}%` },
+                  { label: 'Breakeven', value: '~28 months' },
+                ].map(({ label, value, neutral, green }) => (
+                  <div key={label} className={`p-2.5 rounded-xl border ${green ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                    <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{label}</p>
+                    <p className={`text-[14px] font-bold tabular-nums ${green ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <button className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#059669] text-white text-[13px] font-bold hover:bg-[#047857] transition-colors">
+                Explore refinance <ArrowUpRight size={14} />
+              </button>
+            </div>
+
+            {/* HELOC Opportunity */}
+            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-9 h-9 rounded-xl bg-[#FEF3C7] flex items-center justify-center">
+                    <DollarSign size={16} className="text-[#D97706]" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Access Equity</p>
+                    <p className="text-[13px] font-bold text-[#0D1B2A]">HELOC available</p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#92400E] text-[10px] font-bold border border-[#FDE68A]">
+                  ELIGIBLE
+                </span>
+              </div>
+
+              <div>
+                <p className="text-[22px] font-bold text-[#D97706] tabular-nums leading-none">
+                  Tap <AnimatedNumber value={helocAvailable} prefix="$" compact /> cash
+                </p>
+                <p className="text-[12px] text-[#64748B] mt-1">
+                  Use for renovations, debt payoff, or investments — at a lower rate than credit cards.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'Available cash', value: `$${(helocAvailable / 1000).toFixed(0)}K` },
+                  { label: 'Est. monthly', value: `$${helocMonthly.toLocaleString()}` },
+                  { label: 'HELOC rate', value: `${helocRate}%` },
+                  { label: 'Draw period', value: '10 yrs' },
+                ].map(({ label, value }) => (
+                  <div key={label} className="p-2.5 rounded-xl bg-[#FFFBEB] border border-[#FDE68A]">
+                    <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{label}</p>
+                    <p className="text-[14px] font-bold text-[#0D1B2A] tabular-nums">{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <button className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border-2 border-[#D97706] text-[#D97706] text-[13px] font-bold hover:bg-[#FEF3C7] transition-colors">
+                Explore HELOC <ArrowUpRight size={14} />
+              </button>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── Group B: Payoff Strategies ── */}
+        <motion.section variants={cardVariants} initial="initial" animate="animate">
+          <GroupLabel>Payoff Strategy</GroupLabel>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {/* Pay Off Sooner — slider */}
+            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-9 h-9 rounded-xl bg-[#EEF2FF] flex items-center justify-center">
+                  <TrendingDown size={16} className="text-[#4F46E5]" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Pay Off Sooner</p>
+                  <p className="text-[13px] font-bold text-[#0D1B2A]">
+                    Add <span className="text-[#4F46E5]">${extraPayment}/mo</span>
+                    {extraPayment > 0 && <span className="text-[#059669]"> — save {yearsSaved} yrs & {formatCurrency(interestSaved, true)}</span>}
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-[12px] text-[#64748B] mb-5 ml-11">A small extra payment every month has a compounding effect on your payoff date.</p>
+
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">Extra Monthly</span>
+                  <span className="text-[18px] font-bold text-[#4F46E5] tabular-nums">
+                    +<AnimatedNumber value={extraPayment} prefix="$" />
+                  </span>
+                </div>
+                <input
+                  type="range" min={0} max={1000} step={50}
+                  value={extraPayment}
+                  onChange={e => setExtraPayment(parseInt(e.target.value))}
+                  className="w-full h-1.5 rounded-full appearance-none bg-[#E2E8F0] cursor-pointer accent-[#4F46E5]"
+                />
+                <div className="flex justify-between mt-1 text-[10px] text-[#94A3B8]">
+                  <span>$0</span><span>$1,000</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'Extra monthly', value: `$${extraPayment}` },
+                  { label: 'Years saved', value: `${yearsSaved} yrs`, green: true },
+                  { label: 'Interest saved', value: formatCurrency(interestSaved, true), green: true },
+                  { label: 'New payoff', value: extraPayment > 0 ? 'Earlier!' : 'Jun 2054' },
+                ].map(({ label, value, green }) => (
+                  <div key={label} className={`p-2.5 rounded-xl border ${green && extraPayment > 0 ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                    <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{label}</p>
+                    <p className={`text-[13px] font-bold tabular-nums ${green && extraPayment > 0 ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <button className="mt-4 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[#C7D2FE] text-[#4F46E5] text-[13px] font-semibold hover:bg-[#EEF2FF] transition-colors">
+                Model this <ArrowRight size={13} />
+              </button>
+            </div>
+
+            {/* Pay Off by Age 60 */}
+            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-[#EEF2FF] flex items-center justify-center shrink-0">
+                  <span className="text-[14px] font-black text-[#4F46E5]">60</span>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Pay Off by Age 60</p>
+                  <p className="text-[13px] font-bold text-[#0D1B2A]">
+                    Add <span className="text-[#4F46E5]">$141/mo</span> — mortgage-free at 60
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-[12px] text-[#64748B]">
+                You're currently 35. Paying an extra $141/month means your mortgage is completely gone by your 60th birthday.
+              </p>
+
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'Extra monthly', value: '$141' },
+                  { label: 'Target age', value: '60' },
+                  { label: 'Interest saved', value: `$${(interestSaved60 / 1000).toFixed(0)}K`, green: true },
+                  { label: 'Payoff date', value: payoffDate60, green: true },
+                ].map(({ label, value, green }) => (
+                  <div key={label} className={`p-2.5 rounded-xl border ${green ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                    <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{label}</p>
+                    <p className={`text-[13px] font-bold tabular-nums ${green ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-1 border-t border-[#F1F5F9]">
+                <InsightChip text="This is one of the highest-impact low-risk strategies for long-term wealth building." />
+              </div>
+
+              <button className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[#C7D2FE] text-[#4F46E5] text-[13px] font-semibold hover:bg-[#EEF2FF] transition-colors">
+                Plan this <ArrowRight size={13} />
+              </button>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── Group C: Life Scenarios ── */}
+        <motion.section variants={cardVariants} initial="initial" animate="animate">
+          <GroupLabel>Life Scenarios</GroupLabel>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            {/* Move Up — enhanced (unchanged) */}
+            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-4">
+              <div>
+                <div className="w-9 h-9 rounded-xl bg-[#E6F7F3] flex items-center justify-center mb-3">
+                  <ArrowUpRight size={18} className="text-[#0F6E56]" />
+                </div>
+                <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Move Up</p>
+                <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug mb-1">
+                  Your <span className="text-[#059669]">$128K equity</span> buys a $950K home
+                </p>
+                <p className="text-[12px] text-[#64748B] leading-relaxed">
+                  Roll your equity into a down payment. Three homes in your comfortable range right now.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                {[{ id: 'prop-2', price: '$549K' }, { id: 'prop-4', price: '$595K' }, { id: 'prop-6', price: '$720K' }].map(({ id, price }) => (
+                  <Link key={id} href={`/search/${id}`}
+                    className="flex-1 flex flex-col items-center gap-1 py-3 px-1 rounded-xl border border-[#B2EADC] bg-[#F0FBF8] hover:border-[#0F6E56] hover:bg-[#E6F7F3] transition-all">
+                    <svg width="22" height="20" viewBox="0 0 24 22" fill="none"><path d="M12 2L2 10V20H9V14H15V20H22V10L12 2Z" fill="#9FE1CB" stroke="#0F6E56" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/></svg>
+                    <span className="text-[11px] font-semibold text-[#0D1B2A]">{price}</span>
+                    <span className="text-[10px] font-medium text-[#059669]">Comfortable</span>
+                  </Link>
+                ))}
+              </div>
+              <div className="border-t border-[#F1F5F9]" />
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+                {[{ label: 'Net from sale', value: '$277K' }, { label: 'New buying power', value: '$950K' }, { label: 'Est. new payment', value: '$5,800/mo' }, { label: 'Timeline', value: '90–120 days' }].map(({ label, value }) => (
+                  <div key={label}>
+                    <p className="text-[10px] text-[#94A3B8]">{label}</p>
+                    <p className="text-[13px] font-bold text-[#0D1B2A] tabular-nums">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <Link href="/search" className="text-[12px] font-semibold text-[#059669] hover:text-[#0F6E56] flex items-center gap-1 transition-colors">
+                See all homes in range <ArrowUpRight size={12} />
+              </Link>
+            </div>
+
+            {/* Rent It */}
+            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-3">
+              <div>
+                <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] flex items-center justify-center mb-3">
+                  <Home size={16} className="text-[#059669]" />
+                </div>
+                <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Keep & Rent</p>
+                <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug mb-1">
+                  Rent for <span className="text-[#059669]">$3,200/mo</span> — net $72/mo cash flow
+                </p>
+                <p className="text-[12px] text-[#64748B] leading-relaxed">
+                  Keep this home as an investment. Rent covers your mortgage with a small surplus, and you build equity on two properties simultaneously.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[{ label: 'Est. rent', value: '$3,200/mo' }, { label: 'Net cash flow', value: '+$72/mo', green: true }, { label: '10yr equity (both)', value: '2 props', green: true }, { label: 'Cap rate est.', value: '4.2%' }].map(({ label, value, green }) => (
+                  <div key={label} className={`p-2 rounded-xl border ${green ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                    <p className="text-[10px] text-[#94A3B8]">{label}</p>
+                    <p className={`text-[12px] font-bold tabular-nums ${green ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                  </div>
+                ))}
+              </div>
+              <button className="mt-auto flex items-center gap-1 text-[12px] font-semibold text-[#059669] hover:text-[#047857] transition-colors">
+                Model rental <ArrowRight size={12} />
+              </button>
+            </div>
+
+            {/* Remodel */}
+            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-3">
+              <div>
+                <div className="w-9 h-9 rounded-xl bg-[#FEF3C7] flex items-center justify-center mb-3">
+                  <Wrench size={16} className="text-[#D97706]" />
+                </div>
+                <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Remodel</p>
+                <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug mb-1">
+                  Kitchen remodel → <span className="text-[#D97706]">+$45K value</span>
+                </p>
+                <p className="text-[12px] text-[#64748B] leading-relaxed">
+                  At your current equity and home value, a $30K kitchen remodel returns 150% — one of the highest ROI home improvements.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[{ label: 'Est. cost', value: '$28–32K' }, { label: 'Value added', value: '+$45K', amber: true }, { label: 'ROI', value: '~150%', amber: true }, { label: 'Timeline', value: '6–8 weeks' }].map(({ label, value, amber }) => (
+                  <div key={label} className={`p-2 rounded-xl border ${amber ? 'bg-[#FFFBEB] border-[#FDE68A]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                    <p className="text-[10px] text-[#94A3B8]">{label}</p>
+                    <p className={`text-[12px] font-bold tabular-nums ${amber ? 'text-[#D97706]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                  </div>
+                ))}
+              </div>
+              <button className="mt-auto flex items-center gap-1 text-[12px] font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
+                See remodel ROI <ArrowRight size={12} />
+              </button>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── 4. Maintenance — compact strip ── */}
+        <motion.section variants={cardVariants} initial="initial" animate="animate">
+          <GroupLabel>Home Maintenance</GroupLabel>
+          <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[13px] font-semibold text-[#334155]">Upcoming this year</p>
+              <span className="text-[13px] font-bold text-[#0D1B2A] tabular-nums">{formatCurrency(totalMaintenanceCost)} projected</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {upcomingMaintenance.map(event => {
+                const isUrgent = event.month <= currentMonth + 1
+                return (
+                  <div key={event.id} className={`flex items-center gap-3 p-3 rounded-xl border ${isUrgent ? 'bg-[#FFFBEB] border-[#FDE68A]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isUrgent ? 'bg-[#FEF3C7]' : 'bg-white border border-[#E2E8F0]'}`}>
+                      <Wrench size={13} className={isUrgent ? 'text-[#D97706]' : 'text-[#94A3B8]'} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] font-semibold text-[#0D1B2A] truncate">{event.label}</p>
+                      <div className="flex items-center justify-between">
+                        <p className={`text-[11px] ${isUrgent ? 'text-[#D97706] font-semibold' : 'text-[#94A3B8]'}`}>{MONTH_NAMES[event.month]}{isUrgent ? ' · Soon' : ''}</p>
+                        <p className="text-[11px] font-bold text-[#0D1B2A] tabular-nums">{formatCurrency(event.estimatedCost)}</p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </motion.section>
+
+      </div>
     </PageShell>
   )
 }
