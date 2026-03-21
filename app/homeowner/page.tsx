@@ -202,7 +202,7 @@ export default function HomeownerPage() {
                       </div>
                     </div>
                     <motion.div variants={chartVariants} className="h-48">
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer width="100%" height={192}>
                         <AreaChart data={equityChartData} margin={{ top: 4, right: 4, left: 4, bottom: 4 }}>
                           <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
                           <YAxis tickFormatter={v => `$${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} width={46} />
