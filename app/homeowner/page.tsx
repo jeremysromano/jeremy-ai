@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, TrendingUp, TrendingDown, Wrench, Home, RefreshCw, DollarSign, Zap, ArrowUpRight } from 'lucide-react'
+import { ArrowRight, TrendingUp, TrendingDown, Wrench, Home, RefreshCw, DollarSign, Zap, ArrowUpRight, CreditCard, CheckCircle2, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import {
   AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip,
@@ -67,6 +67,63 @@ export default function HomeownerPage() {
 
   return (
     <PageShell>
+
+      {/* ── Payment Banner ── */}
+      <motion.div
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        className="bg-white rounded-card border border-[#E2E8F0] shadow-card mb-8 overflow-hidden"
+      >
+        {/* Banner header row */}
+        <div className="px-6 py-4 border-b border-[#F1F5F9] flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-[#EEF2FF] flex items-center justify-center shrink-0">
+            <CreditCard size={14} className="text-[#4F46E5]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-bold text-[#0D1B2A]">Mortgage Payment</p>
+            <p className="text-[11px] text-[#94A3B8]">Loan #JR-987-654-3210 · 2847 Waverly Hills Drive, Austin TX</p>
+          </div>
+          <span className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#DCFCE7] text-[#166534] text-[11px] font-bold border border-[#BBF7D0]">
+            <CheckCircle2 size={10} />
+            CURRENT
+          </span>
+        </div>
+
+        {/* Two-column payment status */}
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          {/* Last payment — confirmed */}
+          <div className="px-6 py-5 border-b sm:border-b-0 sm:border-r border-[#F1F5F9]">
+            <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-3">Last Payment</p>
+            <div className="flex items-end gap-3 mb-1">
+              <p className="text-[28px] font-bold text-[#0D1B2A] tabular-nums leading-none">
+                $4,418
+              </p>
+              <span className="mb-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#166534] text-[10px] font-bold">
+                <CheckCircle2 size={9} />
+                PAID
+              </span>
+            </div>
+            <p className="text-[13px] text-[#64748B]">Received March 1, 2026</p>
+            <button className="mt-4 inline-flex items-center gap-1 text-[12px] font-semibold text-[#4F46E5] hover:text-[#4338CA] transition-colors">
+              View payment history <ChevronRight size={12} />
+            </button>
+          </div>
+
+          {/* Next payment due — action area */}
+          <div className="relative px-6 py-5 bg-[#4F46E5]">
+            <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mb-3">Next Payment Due</p>
+            <p className="text-[13px] text-white/70 mb-1">April 1, 2026</p>
+            <p className="text-[28px] font-bold text-white tabular-nums leading-none mb-5">
+              $4,418
+            </p>
+            <button className="w-full py-2.5 rounded-xl bg-white text-[#4F46E5] text-[13px] font-bold hover:bg-[#EEF2FF] transition-colors">
+              Make a Payment
+            </button>
+          </div>
+        </div>
+      </motion.div>
+
       <SectionHeader
         eyebrow="Homeowner Intelligence"
         title="You closed. We keep watching."
