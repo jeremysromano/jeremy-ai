@@ -1,19 +1,130 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss'
 
 const config: Config = {
+  darkMode: ['class'],
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        brand: {
+          50:  '#EEF2FF',
+          100: '#E0E7FF',
+          200: '#C7D2FE',
+          300: '#A5B4FC',
+          400: '#818CF8',
+          500: '#6366F1',
+          600: '#4F46E5',
+          700: '#4338CA',
+          800: '#3730A3',
+          900: '#312E81',
+        },
+        positive: {
+          50:  '#ECFDF5',
+          100: '#D1FAE5',
+          200: '#A7F3D0',
+          400: '#34D399',
+          500: '#10B981',
+          600: '#059669',
+          700: '#047857',
+        },
+        caution: {
+          50:  '#FFFBEB',
+          100: '#FEF3C7',
+          200: '#FDE68A',
+          400: '#FBBF24',
+          500: '#F59E0B',
+          600: '#D97706',
+        },
+        risk: {
+          50:  '#FFF1F2',
+          100: '#FFE4E6',
+          400: '#FB7185',
+          500: '#F43F5E',
+          600: '#E11D48',
+        },
+        b: {
+          bg:       '#EEF2FF',
+          surface:  '#FFFFFF',
+          surface2: '#F8FAFC',
+          border:   '#E2E8F0',
+          border2:  '#CBD5E1',
+          ink1:     '#0D1B2A',
+          ink2:     '#334155',
+          ink3:     '#64748B',
+          ink4:     '#94A3B8',
+        },
+        a: {
+          bg:       '#F5F2EE',
+          surface:  '#FAF8F5',
+          surface2: '#EDE9E4',
+          border:   '#D6CFC7',
+          border2:  '#C5BCB3',
+          ink1:     '#1C1917',
+          ink2:     '#44403C',
+          ink3:     '#78716C',
+          ink4:     '#A8A29E',
+          gold:     '#92700A',
+          goldbg:   '#FEF3C7',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+      },
+      fontSize: {
+        'd-2xl': ['64px', { lineHeight: '0.95', fontWeight: '800', letterSpacing: '-0.03em' }],
+        'd-xl':  ['48px', { lineHeight: '1.0',  fontWeight: '800', letterSpacing: '-0.025em' }],
+        'd-lg':  ['32px', { lineHeight: '1.1',  fontWeight: '700', letterSpacing: '-0.02em' }],
+        'd-md':  ['24px', { lineHeight: '1.2',  fontWeight: '700', letterSpacing: '-0.015em' }],
+        'd-sm':  ['20px', { lineHeight: '1.3',  fontWeight: '600', letterSpacing: '-0.01em' }],
+        'd-xs':  ['16px', { lineHeight: '1.4',  fontWeight: '600' }],
+        'l-lg':  ['14px', { lineHeight: '1.5',  fontWeight: '600', letterSpacing: '0.04em' }],
+        'l-md':  ['13px', { lineHeight: '1.5',  fontWeight: '500', letterSpacing: '0.05em' }],
+        'l-sm':  ['11px', { lineHeight: '1.6',  fontWeight: '500', letterSpacing: '0.08em' }],
+        'b-lg':  ['18px', { lineHeight: '1.6',  fontWeight: '400' }],
+        'b-md':  ['16px', { lineHeight: '1.6',  fontWeight: '400' }],
+        'b-sm':  ['14px', { lineHeight: '1.5',  fontWeight: '400' }],
+      },
+      borderRadius: {
+        'card':    '16px',
+        'card-sm': '12px',
+        'input':   '10px',
+        'btn':     '10px',
+        'pill':    '9999px',
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      boxShadow: {
+        'card':        '0 1px 3px rgba(13,27,42,0.06), 0 4px 16px rgba(13,27,42,0.06)',
+        'card-md':     '0 4px 12px rgba(13,27,42,0.08), 0 12px 40px rgba(13,27,42,0.08)',
+        'card-lg':     '0 8px 24px rgba(13,27,42,0.10), 0 24px 64px rgba(13,27,42,0.10)',
+        'modal':       '0 24px 80px rgba(13,27,42,0.18)',
+        'focus':       '0 0 0 3px rgba(79,70,229,0.25)',
+        'glow-brand':  '0 0 32px rgba(79,70,229,0.15)',
+        'glow-pos':    '0 0 32px rgba(5,150,105,0.15)',
+        'a-card':      '0 1px 3px rgba(28,25,23,0.06), 0 4px 16px rgba(28,25,23,0.06)',
+        'a-card-md':   '0 4px 12px rgba(28,25,23,0.08), 0 12px 40px rgba(28,25,23,0.08)',
+      },
+      animation: {
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
+        'shimmer':    'shimmer 2.5s infinite',
+      },
+      keyframes: {
+        shimmer: {
+          '0%':   { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition:  '200% 0' },
+        },
       },
     },
   },
-  plugins: [],
-};
-export default config;
+  plugins: [
+    require('tailwindcss-animate'),
+  ],
+}
+
+export default config

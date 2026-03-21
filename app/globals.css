@@ -2,26 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── CSS Custom Properties ──────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.625rem;
+
+  /* Borrower theme (default) */
+  --bg:       #EEF2FF;
+  --surface:  #FFFFFF;
+  --surface2: #F8FAFC;
+  --border:   #E2E8F0;
+  --border2:  #CBD5E1;
+  --ink1:     #0D1B2A;
+  --ink2:     #334155;
+  --ink3:     #64748B;
+  --ink4:     #94A3B8;
+
+  --accent:    #4F46E5;
+  --accent-bg: #EEF2FF;
+  --positive:  #059669;
+  --pos-bg:    #ECFDF5;
+  --caution:   #D97706;
+  --caut-bg:   #FFFBEB;
+  --risk:      #E11D48;
+  --risk-bg:   #FFF1F2;
+
+  --shadow-card: 0 1px 3px rgba(13,27,42,0.06), 0 4px 16px rgba(13,27,42,0.06);
+  --shadow-card-md: 0 4px 12px rgba(13,27,42,0.08), 0 12px 40px rgba(13,27,42,0.08);
+  --shadow-modal: 0 24px 80px rgba(13,27,42,0.18);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Advisor theme applied via data-theme="advisor" */
+[data-theme="advisor"] {
+  --bg:       #F5F2EE;
+  --surface:  #FAF8F5;
+  --surface2: #EDE9E4;
+  --border:   #D6CFC7;
+  --border2:  #C5BCB3;
+  --ink1:     #1C1917;
+  --ink2:     #44403C;
+  --ink3:     #78716C;
+  --ink4:     #A8A29E;
+
+  --shadow-card: 0 1px 3px rgba(28,25,23,0.06), 0 4px 16px rgba(28,25,23,0.06);
+  --shadow-card-md: 0 4px 12px rgba(28,25,23,0.08), 0 12px 40px rgba(28,25,23,0.08);
+}
+
+/* ── Base Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--ink1);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* ── Typography utilities ───────────────────────────────────── */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* ── Scrollbar styling ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink4); }
+
+/* ── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
+}
+
+/* ── shadcn base variables ──────────────────────────────────── */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 242 72% 57%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 242 72% 57%;
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * { box-sizing: border-box; }
 }

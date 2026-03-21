@@ -1,0 +1,330 @@
+'use client'
+
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { ArrowRight, TrendingUp, TrendingDown, Wrench, Home, RefreshCw, DollarSign, Zap, ArrowUpRight } from 'lucide-react'
+import Link from 'next/link'
+import {
+  AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip,
+  ResponsiveContainer, ReferenceLine
+} from 'recharts'
+import { PageShell } from '@/components/layout/PageShell'
+import { SectionHeader } from '@/components/shared/SectionHeader'
+import { MetricCard } from '@/components/shared/MetricCard'
+import { ProgressRing } from '@/components/shared/ProgressRing'
+import { AnimatedNumber } from '@/components/shared/AnimatedNumber'
+import { InsightChip } from '@/components/shared/InsightChip'
+import { cardVariants, staggerVariants, chartVariants } from '@/lib/animations'
+import { MOCK_HOMEOWNER } from '@/lib/mock-data'
+import { formatCurrency } from '@/lib/utils'
+
+const MAINTENANCE_ICONS: Record<string, React.FC<any>> = {
+  hvac: Wrench, plumbing: Wrench, roof: Home, landscaping: Wrench,
+  electrical: Zap, general: Home,
+}
+
+const MONTH_NAMES = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="bg-white border border-[#E2E8F0] rounded-card-sm shadow-card-md p-3 text-[12px]">
+      <p className="font-semibold text-[#0D1B2A] mb-1.5">{label}</p>
+      {payload.map((p: any) => (
+        <p key={p.name} className="flex items-center justify-between gap-4">
+          <span style={{ color: p.color }}>{p.name}</span>
+          <span className="font-semibold tabular-nums">{formatCurrency(p.value)}</span>
+        </p>
+      ))}
+    </div>
+  )
+}
+
+export default function HomeownerPage() {
+  const h = MOCK_HOMEOWNER
+  const [extraPayment, setExtraPayment] = useState(200)
+  const currentMonth = 4 // April — 11 months since close
+
+  const upcomingMaintenance = h.maintenanceEvents
+    .filter(e => e.status === 'upcoming')
+    .sort((a, b) => a.month - b.month)
+    .slice(0, 4)
+
+  const totalMaintenanceCost = h.maintenanceEvents
+    .filter(e => e.status === 'upcoming')
+    .reduce((s, e) => s + e.estimatedCost, 0)
+
+  // Extra payment analysis (rough: each ~$100 extra saves ~8 months)
+  const yearsSaved = ((extraPayment / 100) * 0.65).toFixed(1)
+  const interestSaved = extraPayment * 0.65 * 12 * 10 // rough estimate
+
+  const equityChartData = h.equityHistory.map(p => ({
+    label: p.label,
+    'Home Value': p.homeValue,
+    'Loan Balance': p.loanBalance,
+    'Your Equity': p.equity,
+  }))
+
+  return (
+    <PageShell>
+      <SectionHeader
+        eyebrow="Homeowner Intelligence"
+        title="You closed. We keep watching."
+        subtitle="Equity, refinance signals, and homeownership guidance — all in one place."
+        className="mb-8"
+      />
+
+      {/* KPI bar */}
+      <motion.div
+        variants={staggerVariants} initial="initial" animate="animate"
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+      >
+        <MetricCard label="Current Home Value" value={h.currentValue} prefix="$" compact trend="up" trendLabel="+6%" />
+        <MetricCard label="Total Equity" value={h.totalEquity} prefix="$" compact trend="up" />
+        <MetricCard label="Loan-to-Value" value={h.ltv} suffix="%" sublabel="Below 80% → PMI drops" />
+        <MetricCard label="Years Remaining" value={h.yearsRemaining} decimals={1} sublabel="On current schedule" />
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Equity growth chart — 2 cols */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate"
+          className="lg:col-span-2 bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
+          <div className="flex items-start justify-between mb-1">
+            <div>
+              <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Equity Growth</p>
+              <p className="text-b-sm text-[#94A3B8] mt-0.5">Home value vs. loan balance over 30 years</p>
+            </div>
+            <div className="text-right">
+              <p className="text-l-sm text-[#64748B] uppercase tracking-wider">Current Equity</p>
+              <p className="text-d-md font-bold text-positive-600 tabular-nums">
+                <AnimatedNumber value={h.totalEquity} prefix="$" compact />
+              </p>
+            </div>
+          </div>
+          <motion.div variants={chartVariants} className="h-56 mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={equityChartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
+                <YAxis tickFormatter={v => `$${(v / 1000).toFixed(0)}K`} tick={{ fontSize: 11, fill: '#94A3B8' }} axisLine={false} tickLine={false} width={50} />
+                <Tooltip content={<CustomTooltip />} />
+                <defs>
+                  <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#059669" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="valueGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area dataKey="Home Value" type="monotone" stroke="#4F46E5" fill="url(#valueGrad)" strokeWidth={2} dot={false} isAnimationActive animationDuration={900} />
+                <Area dataKey="Loan Balance" type="monotone" stroke="#E2E8F0" fill="#F8FAFC" strokeWidth={2} dot={false} isAnimationActive animationDuration={900} />
+                <Area dataKey="Your Equity" type="monotone" stroke="#059669" fill="url(#equityGrad)" strokeWidth={2.5} dot={false} isAnimationActive animationDuration={900} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </motion.div>
+          <div className="flex items-center gap-4 mt-3">
+            {[
+              { label: 'Home Value', color: '#4F46E5' },
+              { label: 'Loan Balance', color: '#CBD5E1' },
+              { label: 'Your Equity', color: '#059669' },
+            ].map(item => (
+              <div key={item.label} className="flex items-center gap-1.5 text-[12px] text-[#64748B]">
+                <div className="w-3 h-1 rounded" style={{ background: item.color }} />
+                {item.label}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Equity snapshot + LTV ring */}
+        <div className="space-y-5">
+          <motion.div variants={cardVariants} initial="initial" animate="animate"
+            className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6 flex flex-col items-center gap-3">
+            <p className="text-l-sm uppercase tracking-widest text-[#64748B] w-full">Equity Position</p>
+            <ProgressRing value={h.equityPct} max={100} size={140} strokeWidth={12} color="#059669" trackColor="#E2E8F0">
+              <div className="text-center">
+                <p className="text-d-md font-bold text-positive-600 tabular-nums">
+                  <AnimatedNumber value={h.equityPct} suffix="%" />
+                </p>
+                <p className="text-b-sm text-[#64748B]">Equity</p>
+              </div>
+            </ProgressRing>
+            <div className="w-full grid grid-cols-2 gap-2 text-center">
+              <div className="p-2 bg-[#F8FAFC] rounded-card-sm border border-[#E2E8F0]">
+                <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">Own</p>
+                <p className="text-d-xs font-bold text-positive-600 tabular-nums">{formatCurrency(h.totalEquity, true)}</p>
+              </div>
+              <div className="p-2 bg-[#F8FAFC] rounded-card-sm border border-[#E2E8F0]">
+                <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">Owe</p>
+                <p className="text-d-xs font-bold text-[#0D1B2A] tabular-nums">{formatCurrency(h.loanBalance, true)}</p>
+              </div>
+            </div>
+            <InsightChip text="At 4% annual appreciation, you'll reach 30% equity in approximately 4 years." />
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Second row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Refinance watch */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate"
+          className={`bg-white rounded-card border shadow-card p-6 ${
+            h.monthlyPotentialSavings >= 300 ? 'border-positive-300 ring-1 ring-positive-100' :
+            h.monthlyPotentialSavings >= 100 ? 'border-caution-300' : 'border-[#E2E8F0]'
+          }`}>
+          <div className="flex items-center gap-2 mb-4">
+            <RefreshCw size={16} className={h.monthlyPotentialSavings >= 300 ? 'text-positive-600' : 'text-caution-500'} />
+            <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Refinance Watch</p>
+            {h.monthlyPotentialSavings >= 300 && (
+              <span className="ml-auto px-2 py-0.5 rounded-pill bg-positive-50 text-positive-700 text-[11px] font-bold border border-positive-200">
+                Signal Active
+              </span>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="p-3 bg-[#F8FAFC] rounded-card-sm border border-[#E2E8F0]">
+              <p className="text-[11px] text-[#94A3B8] uppercase tracking-wider mb-1">Your Rate</p>
+              <p className="text-d-sm font-bold text-[#0D1B2A] tabular-nums">{h.originalRate.toFixed(3)}%</p>
+            </div>
+            <div className="p-3 bg-positive-50 rounded-card-sm border border-positive-200">
+              <p className="text-[11px] text-positive-700 uppercase tracking-wider mb-1">Market Today</p>
+              <p className="text-d-sm font-bold text-positive-600 tabular-nums">{h.currentMarketRate.toFixed(3)}%</p>
+            </div>
+          </div>
+          <div className="p-4 rounded-card-sm bg-positive-50 border border-positive-200 mb-4">
+            <p className="text-[11px] text-positive-700 uppercase tracking-wider mb-1">Potential Monthly Savings</p>
+            <p className="text-d-lg font-bold text-positive-600 tabular-nums">
+              <AnimatedNumber value={h.monthlyPotentialSavings} prefix="$" suffix="/mo" />
+            </p>
+            <p className="text-b-sm text-positive-700 mt-0.5">{formatCurrency(h.monthlyPotentialSavings * 12)}/year · {formatCurrency(h.monthlyPotentialSavings * 12 * 20)} over 20yr</p>
+          </div>
+          <button className="w-full flex items-center justify-center gap-2 py-2.5 bg-positive-600 text-white rounded-btn text-b-sm font-semibold hover:bg-positive-700 transition-colors">
+            Explore Refinance <ArrowUpRight size={14} />
+          </button>
+        </motion.div>
+
+        {/* Extra payment optimizer */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate"
+          className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp size={16} className="text-brand-600" />
+            <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Payment Optimizer</p>
+          </div>
+          <p className="text-b-sm text-[#64748B] mb-4">What if you paid a little more each month?</p>
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-l-md text-[#64748B] uppercase tracking-wider">Extra Monthly</span>
+              <span className="text-d-xs font-bold text-[#0D1B2A] tabular-nums">
+                +<AnimatedNumber value={extraPayment} prefix="$" />
+              </span>
+            </div>
+            <input
+              type="range" min={0} max={1000} step={50}
+              value={extraPayment}
+              onChange={e => setExtraPayment(parseInt(e.target.value))}
+              className="w-full h-1.5 rounded-pill appearance-none bg-[#E2E8F0] cursor-pointer accent-brand-600"
+            />
+            <div className="flex justify-between mt-0.5 text-[10px] text-[#94A3B8]">
+              <span>$0</span><span>$1,000</span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-3 bg-brand-50 rounded-card-sm border border-brand-100">
+              <span className="text-b-sm text-brand-700">Years saved</span>
+              <span className="text-d-xs font-bold text-brand-600 tabular-nums">{yearsSaved} yrs</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-positive-50 rounded-card-sm border border-positive-100">
+              <span className="text-b-sm text-positive-700">Interest saved</span>
+              <span className="text-d-xs font-bold text-positive-600 tabular-nums">{formatCurrency(interestSaved, true)}</span>
+            </div>
+          </div>
+          <InsightChip
+            text={extraPayment > 0
+              ? `${formatCurrency(extraPayment)}/mo extra could save you ${yearsSaved} years and ${formatCurrency(interestSaved, true)} in interest.`
+              : 'Move the slider to see the impact of extra payments.'
+            }
+            className="mt-3"
+          />
+        </motion.div>
+
+        {/* Maintenance calendar */}
+        <motion.div variants={cardVariants} initial="initial" animate="animate"
+          className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Wrench size={15} className="text-[#64748B]" />
+              <p className="text-l-sm uppercase tracking-widest text-[#64748B]">Maintenance</p>
+            </div>
+            <span className="text-b-sm font-semibold text-[#0D1B2A] tabular-nums">{formatCurrency(totalMaintenanceCost)} projected</span>
+          </div>
+          <div className="space-y-3">
+            {upcomingMaintenance.map(event => {
+              const Icon = MAINTENANCE_ICONS[event.category] ?? Wrench
+              const isUrgent = event.month <= currentMonth + 1
+              return (
+                <div key={event.id} className={`flex items-start gap-3 p-3 rounded-card-sm border ${
+                  isUrgent ? 'bg-caution-50 border-caution-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
+                }`}>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                    isUrgent ? 'bg-caution-100' : 'bg-white border border-[#E2E8F0]'
+                  }`}>
+                    <Icon size={14} className={isUrgent ? 'text-caution-600' : 'text-[#94A3B8]'} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-b-sm font-semibold text-[#0D1B2A] truncate">{event.label}</p>
+                      <span className="shrink-0 text-b-sm font-bold text-[#0D1B2A] tabular-nums">{formatCurrency(event.estimatedCost)}</span>
+                    </div>
+                    <p className={`text-[11px] mt-0.5 ${isUrgent ? 'text-caution-600 font-semibold' : 'text-[#94A3B8]'}`}>
+                      {MONTH_NAMES[event.month]} {isUrgent ? '— due soon' : ''}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Scenario prompts */}
+      <motion.div variants={cardVariants} initial="initial" animate="animate"
+        className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-6">
+        <p className="text-l-sm uppercase tracking-widest text-[#64748B] mb-2">Life Scenario Planning</p>
+        <p className="text-b-sm text-[#94A3B8] mb-5">Big decisions start with the right numbers.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            {
+              icon: ArrowUpRight, title: 'Move Up?', color: '#4F46E5',
+              desc: 'Equity of $127K could become the down payment on a $950K home.',
+              action: 'Run upgrade scenario',
+            },
+            {
+              icon: DollarSign, title: 'Rent It?', color: '#059669',
+              desc: 'This home could rent for ~$3,200/mo. Net cash flow: ~$680/mo after expenses.',
+              action: 'Explore rental analysis',
+            },
+            {
+              icon: Wrench, title: 'Remodel?', color: '#D97706',
+              desc: 'A kitchen remodel adds 12–15% value on average. ROI at current equity: strong.',
+              action: 'See remodel ROI',
+            },
+          ].map(({ icon: Icon, title, color, desc, action }) => (
+            <div key={title} className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] hover:border-brand-200 hover:shadow-card-md transition-all cursor-pointer group">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+                style={{ background: color + '15' }}>
+                <Icon size={20} style={{ color }} />
+              </div>
+              <p className="text-b-md font-bold text-[#0D1B2A] mb-1">{title}</p>
+              <p className="text-b-sm text-[#64748B] mb-3 leading-relaxed">{desc}</p>
+              <p className="text-b-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all"
+                style={{ color }}>
+                {action} <ArrowRight size={14} />
+              </p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    </PageShell>
+  )
+}
