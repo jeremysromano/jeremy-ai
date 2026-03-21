@@ -63,7 +63,7 @@ export function TopNav() {
       <div className="max-w-screen-2xl mx-auto w-full px-6 flex items-center gap-4">
 
         {/* Logo */}
-        <Link href="/search" className="flex items-center shrink-0">
+        <Link href="/" className="flex items-center shrink-0">
           <JeremyLogo size="sm" advisor={isAdvisor} />
         </Link>
 
