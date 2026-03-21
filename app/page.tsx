@@ -3,12 +3,14 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import {
-  CheckCircle2, TrendingDown, Home, AlertCircle, ArrowRight,
-  ChevronRight, Activity, MapPin, Sparkles, Shield, Zap,
+  TrendingDown, AlertCircle, ArrowRight, ChevronRight,
+  Activity, MapPin, Sparkles, Shield, Zap, CheckCircle2,
+  FileText, Download, Share2,
 } from 'lucide-react'
 import { cardVariants, staggerVariants } from '@/lib/animations'
 import { formatCurrency } from '@/lib/utils'
-import { MOCK_PROPERTIES, MOCK_PROFILE } from '@/lib/mock-data'
+import { MOCK_PROPERTIES, MOCK_PROFILE, calcMonthlyPayment } from '@/lib/mock-data'
+import type { PropertyData } from '@/lib/types'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -28,7 +30,6 @@ interface FeedMoment {
 
 const TYPE_CONFIG: Record<MomentType, {
   label: string
-  iconColor: string
   badgeBg: string
   badgeText: string
   borderLeft: string
@@ -36,7 +37,6 @@ const TYPE_CONFIG: Record<MomentType, {
 }> = {
   confirmation: {
     label: 'CONFIRMED',
-    iconColor: '#059669',
     badgeBg: '#DCFCE7',
     badgeText: '#166534',
     borderLeft: '#059669',
@@ -44,7 +44,6 @@ const TYPE_CONFIG: Record<MomentType, {
   },
   signal: {
     label: 'SIGNAL',
-    iconColor: '#4F46E5',
     badgeBg: '#EEF2FF',
     badgeText: '#3730A3',
     borderLeft: '#4F46E5',
@@ -52,7 +51,6 @@ const TYPE_CONFIG: Record<MomentType, {
   },
   action: {
     label: 'ACTION',
-    iconColor: '#D97706',
     badgeBg: '#FEF3C7',
     badgeText: '#92400E',
     borderLeft: '#D97706',
@@ -60,24 +58,15 @@ const TYPE_CONFIG: Record<MomentType, {
   },
 }
 
-// ── Feed moments ────────────────────────────────────────────────────────────────
+// ── Feed moments (homes & pre-approval removed — shown in ribbon/panel) ─────────
 
 const FEED: FeedMoment[] = [
-  {
-    id: 'preapproval',
-    type: 'signal',
-    Icon: CheckCircle2,
-    headline: "You're pre-approved up to $875,000",
-    detail: 'Based on verified income at Palantir Technologies and your 762 credit score. Letter is ready to share with your agent.',
-    time: 'Just now',
-    cta: { label: 'View pre-approval letter', href: '/pre-approval' },
-  },
   {
     id: 'rate-drop',
     type: 'signal',
     Icon: TrendingDown,
     headline: 'Rates dropped to 6.62% — saves you $142/mo on your target',
-    detail: "30-yr fixed fell from 7.00% last week. On the $685k home you're watching with 10% down, your payment drops from $4,622 to $4,480.",
+    detail: "30-yr fixed fell from 7.00% last week. Your monthly payments across all 6 homes just got cheaper.",
     time: '2 hours ago',
     cta: { label: 'Update scenarios', href: '/scenarios' },
   },
@@ -86,24 +75,15 @@ const FEED: FeedMoment[] = [
     type: 'confirmation',
     Icon: CheckCircle2,
     headline: 'Employment verified at Palantir Technologies',
-    detail: '$295,000/yr income confirmed via payroll integration. No documents needed — pulled automatically from your employer.',
+    detail: '$295,000/yr income confirmed via payroll integration. No documents needed — pulled automatically.',
     time: 'Yesterday',
-  },
-  {
-    id: 'homes-in-range',
-    type: 'signal',
-    Icon: Home,
-    headline: '2 homes moved into your comfort zone this week',
-    detail: 'New listings at $648k and $671k in South Austin match your criteria and fit comfortably within your $875,000 range.',
-    time: 'Today',
-    cta: { label: 'Browse them', href: '/search' },
   },
   {
     id: 'assets',
     type: 'confirmation',
     Icon: CheckCircle2,
     headline: 'Verified assets: $167,400 across 3 accounts',
-    detail: 'Chase checking ($42,000), Chase savings ($53,400), and Fidelity brokerage ($72,000) — all confirmed via Plaid. No action needed.',
+    detail: 'Chase checking ($42,000), Chase savings ($53,400), and Fidelity brokerage ($72,000) confirmed via Plaid.',
     time: '2 days ago',
   },
   {
@@ -125,6 +105,107 @@ const BUYING_POWER_TIERS = [
   { label: 'Ceiling',     amount: 1_050_000, pct: 89, color: '#D97706', bg: '#FEF3C7', textColor: '#92400E' },
 ]
 
+// ── Affordability badge ────────────────────────────────────────────────────────
+
+function affordabilityBadge(price: number) {
+  if (price <= 875_000)  return { label: 'Comfortable', bg: '#DCFCE7', text: '#166534' }
+  if (price <= 965_000)  return { label: 'Stretch',     bg: '#FEF3C7', text: '#92400E' }
+  return                        { label: 'Above range', bg: '#FEE2E2', text: '#991B1B' }
+}
+
+// ── HomeCard ────────────────────────────────────────────────────────────────────
+
+function HomeCard({ property, index }: { property: PropertyData; index: number }) {
+  const loanAmount = property.price * 0.9
+  const monthly    = Math.round(calcMonthlyPayment(loanAmount, 6.62, 30))
+  const badge      = affordabilityBadge(property.price)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.1 + index * 0.07 }}
+      className="shrink-0"
+    >
+      <Link
+        href="/search"
+        className="block w-52 rounded-card border border-[#E2E8F0] bg-white shadow-card hover:shadow-card-md hover:-translate-y-0.5 transition-all duration-150 overflow-hidden"
+      >
+        {/* Photo / gradient image area */}
+        <div className="h-[108px] relative overflow-hidden">
+          {property.photo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={property.photo}
+              alt={property.address}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className={`w-full h-full bg-gradient-to-br ${property.gradient}`} />
+          )}
+          {/* Dark scrim for badge legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent" />
+          <span
+            className="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-pill backdrop-blur-sm"
+            style={{ background: `${badge.bg}E6`, color: badge.text }}
+          >
+            {badge.label}
+          </span>
+          <span className="absolute top-2 right-2 text-[10px] font-semibold px-1.5 py-0.5 rounded-pill bg-black/30 text-white">
+            {property.daysOnMarket}d
+          </span>
+        </div>
+
+        {/* Info */}
+        <div className="p-3">
+          <p className="text-[14px] font-bold text-[#0D1B2A]">
+            {formatCurrency(property.price, true)}
+          </p>
+          <p className="text-[11px] text-[#64748B] mt-0.5 truncate">{property.address}</p>
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-[11px] text-[#94A3B8]">
+              {property.beds}bd · {property.baths}ba
+            </span>
+            <span className="text-[12px] font-bold text-[#4F46E5] tabular-nums">
+              ${monthly.toLocaleString()}/mo
+            </span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  )
+}
+
+// ── HomesRibbon ────────────────────────────────────────────────────────────────
+
+function HomesRibbon({ properties }: { properties: PropertyData[] }) {
+  return (
+    <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+      {properties.map((p, i) => (
+        <HomeCard key={p.id} property={p} index={i} />
+      ))}
+
+      {/* See all card */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 + properties.length * 0.07 }}
+        className="shrink-0 snap-start"
+      >
+        <Link
+          href="/search"
+          className="flex flex-col items-center justify-center w-36 h-full min-h-[188px] rounded-card border-2 border-dashed border-[#C7D2FE] text-[#4F46E5] hover:border-[#4F46E5] hover:bg-[#EEF2FF] transition-colors gap-2 shrink-0"
+        >
+          <ChevronRight size={22} />
+          <span className="text-[12px] font-semibold text-center leading-tight px-2">
+            See all<br />homes
+          </span>
+        </Link>
+      </motion.div>
+    </div>
+  )
+}
+
 // ── FeedCard ────────────────────────────────────────────────────────────────────
 
 function FeedCard({ moment }: { moment: FeedMoment }) {
@@ -136,7 +217,6 @@ function FeedCard({ moment }: { moment: FeedMoment }) {
         style={{ background: cfg.cardBg, borderLeft: `3px solid ${cfg.borderLeft}` }}
       >
         <div className="p-5">
-          {/* Badge + time */}
           <div className="flex items-center justify-between mb-3">
             <span
               className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-pill text-[10px] font-bold tracking-wider"
@@ -148,17 +228,13 @@ function FeedCard({ moment }: { moment: FeedMoment }) {
             <span className="text-[11px] text-[#94A3B8]">{moment.time}</span>
           </div>
 
-          {/* Headline */}
           <p className="text-[15px] font-semibold text-[#0D1B2A] leading-snug mb-1.5">
             {moment.headline}
           </p>
-
-          {/* Detail */}
           <p className="text-[13px] text-[#64748B] leading-relaxed">
             {moment.detail}
           </p>
 
-          {/* CTA */}
           {moment.cta && (
             <div className="mt-3.5 pt-3.5 border-t border-[#F1F5F9]">
               <Link
@@ -188,7 +264,6 @@ function BuyingPowerPanel() {
         </Link>
       </div>
       <p className="text-[12px] text-[#94A3B8] mb-4">762 credit · $295k income · 24% DTI · verified</p>
-
       <div className="space-y-4">
         {BUYING_POWER_TIERS.map((tier, i) => (
           <div key={tier.label}>
@@ -227,7 +302,6 @@ function LiveSignalsPanel() {
     { Icon: Shield,   label: 'Assets',     value: '$167k',  sub: '3 accounts verified',  color: '#4F46E5' },
     { Icon: MapPin,   label: 'Austin, TX', value: '2 new',  sub: 'In your range today',  color: '#D97706' },
   ]
-
   return (
     <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5">
       <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-4">Live Signals</p>
@@ -254,64 +328,32 @@ function LiveSignalsPanel() {
   )
 }
 
-// ── WatchedPropertyPanel ────────────────────────────────────────────────────────
+// ── PreApprovalPanel ────────────────────────────────────────────────────────────
 
-function WatchedPropertyPanel() {
-  const property = MOCK_PROPERTIES[0]
-  if (!property) return null
-  const monthly = 4480
-
+function PreApprovalPanel() {
   return (
-    <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5">
+    <div className="bg-[#F5F3FF] rounded-card border border-[#DDD6FE] p-5">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">Watching</p>
-        <Link href="/search" className="text-[11px] text-[#4F46E5] font-semibold hover:text-[#4338CA] transition-colors">
-          All homes →
-        </Link>
-      </div>
-
-      <div className="rounded-card-sm border border-[#E2E8F0] overflow-hidden">
-        {/* Property image area */}
-        <div className={`h-[96px] ${property.gradient} relative`}>
-          <div className="absolute top-2 left-2">
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-pill bg-white/90 text-[#166534]">
-              Comfortable
-            </span>
-          </div>
-          <div className="absolute top-2 right-2">
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-pill bg-black/20 text-white">
-              {property.daysOnMarket}d
-            </span>
-          </div>
+        <div className="flex items-center gap-2">
+          <FileText size={14} className="text-[#7C3AED]" />
+          <p className="text-[10px] font-bold text-[#6D28D9] uppercase tracking-widest">Pre-Approval Letter</p>
         </div>
-
-        <div className="p-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="text-[14px] font-bold text-[#0D1B2A]">
-                {formatCurrency(property.price, true)}
-              </p>
-              <p className="text-[11px] text-[#64748B] mt-0.5 truncate">{property.address}</p>
-            </div>
-            <div className="text-right shrink-0">
-              <p className="text-[13px] font-bold text-[#4F46E5] tabular-nums">
-                ${monthly.toLocaleString()}/mo
-              </p>
-              <p className="text-[10px] text-[#94A3B8] mt-0.5">at 6.62%</p>
-            </div>
-          </div>
-          <p className="text-[11px] text-[#94A3B8] mt-1.5">
-            {property.beds}bd · {property.baths}ba · {property.sqft.toLocaleString()} sqft
-          </p>
-        </div>
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-pill bg-[#DCFCE7] text-[#166534]">
+          READY
+        </span>
       </div>
-
-      <Link
-        href="/search"
-        className="mt-3 flex items-center justify-center gap-1.5 py-2 rounded-card-sm border border-[#C7D2FE] bg-[#EEF2FF] hover:bg-[#E0E7FF] transition-colors text-[12px] font-semibold text-[#4F46E5]"
-      >
-        Browse all homes <ChevronRight size={11} />
-      </Link>
+      <p className="text-[22px] font-bold text-[#0D1B2A] tabular-nums mb-0.5">$875,000</p>
+      <p className="text-[11px] text-[#64748B] mb-4">Valid through Apr 21, 2026 · 762 credit</p>
+      <div className="flex gap-2">
+        <button className="flex-1 flex items-center justify-center gap-1.5 py-2 text-[12px] font-semibold text-[#4F46E5] bg-white rounded-lg border border-[#C4B5FD] hover:bg-[#EEF2FF] transition-colors">
+          <Download size={12} />
+          Download
+        </button>
+        <button className="flex-1 flex items-center justify-center gap-1.5 py-2 text-[12px] font-semibold text-white bg-[#7C3AED] rounded-lg hover:bg-[#6D28D9] transition-colors">
+          <Share2 size={12} />
+          Share
+        </button>
+      </div>
     </div>
   )
 }
@@ -319,8 +361,6 @@ function WatchedPropertyPanel() {
 // ── Page ────────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const firstName = MOCK_PROFILE.name.split(' ')[0]
-
   const counts = {
     signal:       FEED.filter(m => m.type === 'signal').length,
     confirmation: FEED.filter(m => m.type === 'confirmation').length,
@@ -336,21 +376,28 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
-          className="mb-9"
+          className="mb-6"
         >
-          {/* Active badge */}
-          <div className="mb-3">
+          {/* Chips row */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-white border border-[#E2E8F0] text-[11px] font-semibold text-[#4F46E5] shadow-sm">
               <Sparkles size={11} />
               JEREMY.AI · ACTIVE
             </span>
+            <Link
+              href="/pre-approval"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-[#DCFCE7] border border-[#BBF7D0] text-[11px] font-semibold text-[#166534] hover:bg-[#BBF7D0] transition-colors"
+            >
+              <CheckCircle2 size={11} />
+              PRE-APPROVED · $875K
+            </Link>
           </div>
 
           <h1 className="text-[30px] font-bold text-[#0D1B2A] leading-tight tracking-tight mb-1.5">
-            Good morning, {firstName}.
+            Homes in your range right now.
           </h1>
           <p className="text-[15px] text-[#64748B]">
-            Here&apos;s what&apos;s happening with your homeownership journey.
+            {MOCK_PROPERTIES.length} homes match your profile · rates at 6.62% · updated today
           </p>
 
           {/* Summary pills */}
@@ -358,7 +405,7 @@ export default function DashboardPage() {
             {counts.signal > 0 && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-[#EEF2FF] border border-[#C7D2FE] text-[12px] font-semibold text-[#3730A3]">
                 <Zap size={11} />
-                {counts.signal} signals
+                {counts.signal} signal{counts.signal !== 1 ? 's' : ''}
               </span>
             )}
             {counts.confirmation > 0 && (
@@ -376,6 +423,11 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
+        {/* ── Homes ribbon ── */}
+        <div className="mb-8">
+          <HomesRibbon properties={MOCK_PROPERTIES} />
+        </div>
+
         {/* ── Content grid ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
 
@@ -390,7 +442,7 @@ export default function DashboardPage() {
               variants={cardVariants}
               className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest pb-1"
             >
-              Right now
+              What&apos;s happening
             </motion.p>
 
             {FEED.map(moment => (
@@ -407,7 +459,7 @@ export default function DashboardPage() {
           >
             <BuyingPowerPanel />
             <LiveSignalsPanel />
-            <WatchedPropertyPanel />
+            <PreApprovalPanel />
           </motion.div>
 
         </div>
