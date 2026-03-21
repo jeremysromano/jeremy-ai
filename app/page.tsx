@@ -128,7 +128,7 @@ function HomeCard({ property, index }: { property: PropertyData; index: number }
       className="shrink-0"
     >
       <Link
-        href="/search"
+        href={`/search/${property.id}`}
         className="block w-52 rounded-card border border-[#E2E8F0] bg-white shadow-card hover:shadow-card-md hover:-translate-y-0.5 transition-all duration-150 overflow-hidden"
       >
         {/* Photo / gradient image area */}
