@@ -293,36 +293,100 @@ export default function HomeownerPage() {
         <p className="text-l-sm uppercase tracking-widest text-[#64748B] mb-2">Life Scenario Planning</p>
         <p className="text-b-sm text-[#94A3B8] mb-5">Big decisions start with the right numbers.</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            {
-              icon: ArrowUpRight, title: 'Move Up?', color: '#4F46E5',
-              desc: 'Equity of $127K could become the down payment on a $950K home.',
-              action: 'Run upgrade scenario',
-            },
-            {
-              icon: DollarSign, title: 'Rent It?', color: '#059669',
-              desc: 'This home could rent for ~$3,200/mo. Net cash flow: ~$680/mo after expenses.',
-              action: 'Explore rental analysis',
-            },
-            {
-              icon: Wrench, title: 'Remodel?', color: '#D97706',
-              desc: 'A kitchen remodel adds 12–15% value on average. ROI at current equity: strong.',
-              action: 'See remodel ROI',
-            },
-          ].map(({ icon: Icon, title, color, desc, action }) => (
-            <div key={title} className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] hover:border-brand-200 hover:shadow-card-md transition-all cursor-pointer group">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
-                style={{ background: color + '15' }}>
-                <Icon size={20} style={{ color }} />
+
+          {/* ── Move Up card (enhanced) ── */}
+          <div className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] flex flex-col gap-4">
+            {/* Header */}
+            <div>
+              <div className="w-10 h-10 rounded-xl bg-[#E6F7F3] flex items-center justify-center mb-3">
+                <ArrowUpRight size={20} className="text-[#0F6E56]" />
               </div>
-              <p className="text-b-md font-bold text-[#0D1B2A] mb-1">{title}</p>
-              <p className="text-b-sm text-[#64748B] mb-3 leading-relaxed">{desc}</p>
-              <p className="text-b-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all"
-                style={{ color }}>
-                {action} <ArrowRight size={14} />
+              <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Move Up</p>
+              <p className="text-[16px] font-bold text-[#0D1B2A] leading-snug mb-1">
+                Your <span className="text-[#059669]">$128K equity</span> buys a $950K home
+              </p>
+              <p className="text-[13px] text-[#64748B] leading-relaxed">
+                Roll your equity into a down payment. Three homes in your comfortable range right now.
               </p>
             </div>
-          ))}
+
+            {/* Home chips */}
+            <div className="flex gap-2">
+              {[
+                { id: 'prop-2', price: '$549K' },
+                { id: 'prop-4', price: '$595K' },
+                { id: 'prop-6', price: '$720K' },
+              ].map(({ id, price }) => (
+                <Link
+                  key={id}
+                  href={`/search/${id}`}
+                  className="flex-1 flex flex-col items-center gap-1 py-3 px-2 rounded-xl border border-[#B2EADC] bg-[#F0FBF8] hover:border-[#0F6E56] hover:bg-[#E6F7F3] transition-all"
+                >
+                  {/* House SVG */}
+                  <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 10V20H9V14H15V20H22V10L12 2Z" fill="#9FE1CB" stroke="#0F6E56" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
+                  </svg>
+                  <span className="text-[12px] font-semibold text-[#0D1B2A]">{price}</span>
+                  <span className="text-[10px] font-medium text-[#059669]">Comfortable</span>
+                </Link>
+              ))}
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-[#E2E8F0]" />
+
+            {/* Stat grid */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              {[
+                { label: 'Net from sale',       value: '$277K' },
+                { label: 'New buying power',     value: '$950K' },
+                { label: 'Est. new payment',     value: '$5,800/mo' },
+                { label: 'Timeline',             value: '90–120 days' },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <p className="text-[11px] text-[#94A3B8]">{label}</p>
+                  <p className="text-[14px] font-bold text-[#0D1B2A] tabular-nums">{value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <Link
+              href="/search"
+              className="text-[13px] font-semibold text-[#059669] hover:text-[#0F6E56] flex items-center gap-1 transition-colors"
+            >
+              See all homes in range <ArrowUpRight size={13} />
+            </Link>
+          </div>
+
+          {/* ── Rent It card (unchanged) ── */}
+          <div className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] hover:border-brand-200 hover:shadow-card-md transition-all cursor-pointer group">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: '#05966915' }}>
+              <DollarSign size={20} style={{ color: '#059669' }} />
+            </div>
+            <p className="text-b-md font-bold text-[#0D1B2A] mb-1">Rent It?</p>
+            <p className="text-b-sm text-[#64748B] mb-3 leading-relaxed">
+              This home could rent for ~$3,200/mo. Net cash flow: ~$680/mo after expenses.
+            </p>
+            <p className="text-b-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all text-[#059669]">
+              Explore rental analysis <ArrowRight size={14} />
+            </p>
+          </div>
+
+          {/* ── Remodel card (unchanged) ── */}
+          <div className="p-5 rounded-card-sm border border-[#E2E8F0] bg-[#F8FAFC] hover:border-brand-200 hover:shadow-card-md transition-all cursor-pointer group">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: '#D9770615' }}>
+              <Wrench size={20} style={{ color: '#D97706' }} />
+            </div>
+            <p className="text-b-md font-bold text-[#0D1B2A] mb-1">Remodel?</p>
+            <p className="text-b-sm text-[#64748B] mb-3 leading-relaxed">
+              A kitchen remodel adds 12–15% value on average. ROI at current equity: strong.
+            </p>
+            <p className="text-b-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all text-[#D97706]">
+              See remodel ROI <ArrowRight size={14} />
+            </p>
+          </div>
+
         </div>
       </motion.div>
     </PageShell>
