@@ -201,7 +201,7 @@ export default function HomeownerPage() {
                         </p>
                       </div>
                     </div>
-                    <motion.div variants={chartVariants} className="h-48">
+                    <div className="h-48">
                       <ResponsiveContainer width="100%" height={192}>
                         <AreaChart data={equityChartData} margin={{ top: 4, right: 4, left: 4, bottom: 4 }}>
                           <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
@@ -222,7 +222,7 @@ export default function HomeownerPage() {
                           <Area dataKey="Your Equity" type="monotone" stroke="#059669" fill="url(#equityGrad)" strokeWidth={2.5} dot={false} />
                         </AreaChart>
                       </ResponsiveContainer>
-                    </motion.div>
+                    </div>
                     <div className="flex items-center gap-4 mt-2">
                       {[{ label: 'Home Value', color: '#4F46E5' }, { label: 'Loan Balance', color: '#CBD5E1' }, { label: 'Your Equity', color: '#059669' }].map(item => (
                         <div key={item.label} className="flex items-center gap-1.5 text-[11px] text-[#64748B]">
