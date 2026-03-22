@@ -571,7 +571,7 @@ export default function HomeownerPage() {
                   <div className="flex items-center gap-2">
                     {/* HD wordmark */}
                     <div className="bg-white rounded px-1.5 py-0.5">
-                      <span className="text-[#F96302] text-[11px] font-black tracking-tight">THE HOME DEPOT</span>
+                      <span className="text-[#F96302] text-[11px] font-black tracking-tight">The Home Spot</span>
                     </div>
                   </div>
                   <span className="text-[9px] text-white/70 uppercase tracking-widest">Partner Offer</span>
