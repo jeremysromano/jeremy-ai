@@ -564,7 +564,47 @@ export default function HomeownerPage() {
                   </div>
                 ))}
               </div>
-              <button className="mt-auto flex items-center gap-1 text-[12px] font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
+              {/* ── Home Depot Partner Offer ── */}
+              <div className="rounded-xl border border-[#F96302] bg-[#FFF7F0] overflow-hidden">
+                {/* Header bar */}
+                <div className="flex items-center justify-between px-3 py-2 bg-[#F96302]">
+                  <div className="flex items-center gap-2">
+                    {/* HD wordmark */}
+                    <div className="bg-white rounded px-1.5 py-0.5">
+                      <span className="text-[#F96302] text-[11px] font-black tracking-tight">THE HOME DEPOT</span>
+                    </div>
+                  </div>
+                  <span className="text-[9px] text-white/70 uppercase tracking-widest">Partner Offer</span>
+                </div>
+                {/* Offer body */}
+                <div className="px-3 py-2.5">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div>
+                      <p className="text-[13px] font-bold text-[#0D1B2A] leading-snug">10% off kitchen materials</p>
+                      <p className="text-[11px] text-[#64748B]">+ <span className="font-semibold text-[#059669]">$500 gift card</span> on orders over $5K</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-[9px] text-[#94A3B8] uppercase tracking-wider">Est. savings</p>
+                      <p className="text-[15px] font-bold text-[#F96302] tabular-nums leading-none">$3,500</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 mb-2.5 p-2 rounded-lg bg-white border border-[#FED7AA]">
+                    <div className="flex-1">
+                      <p className="text-[9px] text-[#94A3B8] uppercase tracking-wider mb-0.5">Promo code</p>
+                      <p className="text-[13px] font-bold text-[#0D1B2A] tracking-widest">JEREMY10</p>
+                    </div>
+                    <button className="text-[10px] font-bold text-[#F96302] border border-[#F96302] rounded px-2 py-1 hover:bg-[#FFF7F0] transition-colors">
+                      Copy
+                    </button>
+                  </div>
+                  <button className="w-full py-2 rounded-lg bg-[#F96302] text-white text-[12px] font-bold hover:bg-[#E05502] transition-colors flex items-center justify-center gap-1.5">
+                    Shop Kitchen Deals <ArrowUpRight size={12} />
+                  </button>
+                  <p className="text-[9px] text-[#94A3B8] text-center mt-1.5">Offer expires Apr 30, 2026 · jeremyhome.ai members only</p>
+                </div>
+              </div>
+
+              <button className="flex items-center gap-1 text-[12px] font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
                 See remodel ROI <ArrowRight size={12} />
               </button>
             </div>
