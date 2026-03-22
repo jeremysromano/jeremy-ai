@@ -73,8 +73,34 @@ export default function HomeownerPage() {
     .filter(e => e.status === 'upcoming')
     .reduce((s, e) => s + e.estimatedCost, 0)
 
-  const yearsSaved = ((extraPayment / 100) * 0.65).toFixed(1)
-  const interestSaved = extraPayment * 0.65 * 12 * 10
+  const [payoffPreset, setPayoffPreset] = useState<'standard' | 'age60' | 'age55' | 'custom'>('custom')
+
+  // Payoff scenarios — three named goals + free slider
+  const PAYOFF_GOALS = [
+    { id: 'standard', label: 'On Track',    sub: 'No extra',    extra: 0,   age: 64, yearsSaved: 0,   interestSaved: 0,     payoff: 'Jan 2055' },
+    { id: 'age60',    label: 'By Age 60',   sub: '+$141/mo',    extra: 141, age: 60, yearsSaved: 3.5, interestSaved: 38000, payoff: 'Mar 2051' },
+    { id: 'age55',    label: 'By Age 55',   sub: '+$387/mo',    extra: 387, age: 55, yearsSaved: 9.0, interestSaved: 77000, payoff: 'Dec 2045' },
+    { id: 'custom',   label: 'Custom',      sub: 'Set amount',  extra: -1,  age: 0,  yearsSaved: 0,   interestSaved: 0,     payoff: '' },
+  ] as const
+
+  const handleGoalClick = (id: typeof payoffPreset, extra: number) => {
+    setPayoffPreset(id)
+    if (id !== 'custom') setExtraPayment(extra)
+  }
+  const handleSlider = (v: number) => {
+    setExtraPayment(v)
+    const match = PAYOFF_GOALS.find(g => g.id !== 'custom' && g.extra === v)
+    setPayoffPreset(match ? match.id as typeof payoffPreset : 'custom')
+  }
+
+  // Derive display stats from active selection
+  const activeGoal = PAYOFF_GOALS.find(g => g.id === payoffPreset)!
+  const displayExtra        = payoffPreset === 'custom' ? extraPayment : activeGoal.extra
+  const displayYearsSaved   = payoffPreset === 'custom' ? ((extraPayment / 100) * 0.65) : activeGoal.yearsSaved
+  const displayInterestSaved = payoffPreset === 'custom' ? extraPayment * 0.65 * 12 * 10 : activeGoal.interestSaved
+  const displayPayoff       = payoffPreset === 'custom'
+    ? (() => { const d = new Date(2026, 2); d.setMonth(d.getMonth() + Math.round((29.1 - displayYearsSaved) * 12)); return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) })()
+    : activeGoal.payoff
 
   // Sell path calculations
   const sellingCosts = Math.round(h.currentValue * 0.06)        // agent + closing ~6%
@@ -90,11 +116,6 @@ export default function HomeownerPage() {
     'Loan Balance': p.loanBalance,
     'Your Equity': p.equity,
   }))
-
-  // Pay-off-by-60 math (rough)
-  const extraFor60 = 141
-  const interestSaved60 = 38000
-  const payoffDate60 = 'Mar 2051'
 
   // HELOC numbers
   const helocAvailable = 86000
@@ -364,109 +385,7 @@ export default function HomeownerPage() {
           </div>
         </motion.section>
 
-        {/* ── Group B: Payoff Strategies ── */}
-        <motion.section variants={cardVariants} initial="initial" animate="animate">
-          <GroupLabel>Payoff Strategy</GroupLabel>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            {/* Pay Off Sooner — slider */}
-            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-9 h-9 rounded-xl bg-[#EEF2FF] flex items-center justify-center">
-                  <TrendingDown size={16} className="text-[#4F46E5]" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Pay Off Sooner</p>
-                  <p className="text-[13px] font-bold text-[#0D1B2A]">
-                    Add <span className="text-[#4F46E5]">${extraPayment}/mo</span>
-                    {extraPayment > 0 && <span className="text-[#059669]"> — save {yearsSaved} yrs & {formatCurrency(interestSaved, true)}</span>}
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-[12px] text-[#64748B] mb-5 ml-11">A small extra payment every month has a compounding effect on your payoff date.</p>
-
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">Extra Monthly</span>
-                  <span className="text-[18px] font-bold text-[#4F46E5] tabular-nums">
-                    +<AnimatedNumber value={extraPayment} prefix="$" />
-                  </span>
-                </div>
-                <input
-                  type="range" min={0} max={1000} step={50}
-                  value={extraPayment}
-                  onChange={e => setExtraPayment(parseInt(e.target.value))}
-                  className="w-full h-1.5 rounded-full appearance-none bg-[#E2E8F0] cursor-pointer accent-[#4F46E5]"
-                />
-                <div className="flex justify-between mt-1 text-[10px] text-[#94A3B8]">
-                  <span>$0</span><span>$1,000</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: 'Extra monthly', value: `$${extraPayment}` },
-                  { label: 'Years saved', value: `${yearsSaved} yrs`, green: true },
-                  { label: 'Interest saved', value: formatCurrency(interestSaved, true), green: true },
-                  { label: 'New payoff', value: extraPayment > 0 ? 'Earlier!' : 'Jun 2054' },
-                ].map(({ label, value, green }) => (
-                  <div key={label} className={`p-2.5 rounded-xl border ${green && extraPayment > 0 ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
-                    <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{label}</p>
-                    <p className={`text-[13px] font-bold tabular-nums ${green && extraPayment > 0 ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
-                  </div>
-                ))}
-              </div>
-
-              <button className="mt-4 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[#C7D2FE] text-[#4F46E5] text-[13px] font-semibold hover:bg-[#EEF2FF] transition-colors">
-                Model this <ArrowRight size={13} />
-              </button>
-            </div>
-
-            {/* Pay Off by Age 60 */}
-            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-[#EEF2FF] flex items-center justify-center shrink-0">
-                  <span className="text-[14px] font-black text-[#4F46E5]">60</span>
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Pay Off by Age 60</p>
-                  <p className="text-[13px] font-bold text-[#0D1B2A]">
-                    Add <span className="text-[#4F46E5]">$141/mo</span> — mortgage-free at 60
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-[12px] text-[#64748B]">
-                You're currently 35. Paying an extra $141/month means your mortgage is completely gone by your 60th birthday.
-              </p>
-
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { label: 'Extra monthly', value: '$141' },
-                  { label: 'Target age', value: '60' },
-                  { label: 'Interest saved', value: `$${(interestSaved60 / 1000).toFixed(0)}K`, green: true },
-                  { label: 'Payoff date', value: payoffDate60, green: true },
-                ].map(({ label, value, green }) => (
-                  <div key={label} className={`p-2.5 rounded-xl border ${green ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
-                    <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{label}</p>
-                    <p className={`text-[13px] font-bold tabular-nums ${green ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pt-1 border-t border-[#F1F5F9]">
-                <InsightChip text="This is one of the highest-impact low-risk strategies for long-term wealth building." />
-              </div>
-
-              <button className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[#C7D2FE] text-[#4F46E5] text-[13px] font-semibold hover:bg-[#EEF2FF] transition-colors">
-                Plan this <ArrowRight size={13} />
-              </button>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ── Group C: Life Scenarios ── */}
+        {/* ── Group B: Life Scenarios (moved above payoff) ── */}
         <motion.section variants={cardVariants} initial="initial" animate="animate">
           <GroupLabel>Life Scenarios</GroupLabel>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -650,6 +569,134 @@ export default function HomeownerPage() {
               </button>
             </div>
 
+          </div>
+        </motion.section>
+
+        {/* ── Group C: Payoff Strategy — unified interactive card ── */}
+        <motion.section variants={cardVariants} initial="initial" animate="animate">
+          <GroupLabel>Payoff Strategy</GroupLabel>
+          <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card overflow-hidden">
+
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-[#F1F5F9] flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[15px] font-bold text-[#0D1B2A] mb-0.5">Choose your payoff pace</p>
+                <p className="text-[12px] text-[#64748B]">Every extra dollar compounds — pick a goal or dial in your own amount.</p>
+              </div>
+              {displayExtra > 0 && (
+                <div className="shrink-0 text-right">
+                  <p className="text-[10px] text-[#94A3B8] uppercase tracking-widest">Saving you</p>
+                  <p className="text-[20px] font-bold text-[#059669] tabular-nums leading-none">
+                    {formatCurrency(displayInterestSaved, true)}
+                  </p>
+                  <p className="text-[11px] text-[#64748B]">in interest</p>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+              {/* Left: goal selector + slider */}
+              <div className="flex flex-col gap-5">
+
+                {/* Goal tiles */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {PAYOFF_GOALS.map(goal => {
+                    const active = payoffPreset === goal.id
+                    return (
+                      <button
+                        key={goal.id}
+                        onClick={() => handleGoalClick(goal.id as typeof payoffPreset, goal.extra)}
+                        className={`p-3 rounded-xl border text-left transition-all ${
+                          active
+                            ? 'border-[#4F46E5] bg-[#EEF2FF] shadow-sm'
+                            : 'border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#C7D2FE] hover:bg-white'
+                        }`}
+                      >
+                        <p className={`text-[12px] font-bold mb-0.5 ${active ? 'text-[#4F46E5]' : 'text-[#0D1B2A]'}`}>{goal.label}</p>
+                        <p className={`text-[10px] font-medium ${active ? 'text-[#6366F1]' : 'text-[#94A3B8]'}`}>{goal.sub}</p>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Slider */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[12px] font-semibold text-[#64748B] uppercase tracking-wider">Extra Monthly Payment</span>
+                    <span className="text-[22px] font-bold text-[#4F46E5] tabular-nums leading-none">
+                      +<AnimatedNumber value={displayExtra} prefix="$" />
+                    </span>
+                  </div>
+                  <input
+                    type="range" min={0} max={600} step={25}
+                    value={displayExtra}
+                    onChange={e => handleSlider(parseInt(e.target.value))}
+                    className="w-full h-2 rounded-full appearance-none bg-[#E2E8F0] cursor-pointer accent-[#4F46E5]"
+                  />
+                  <div className="flex justify-between mt-1.5 text-[10px] text-[#94A3B8]">
+                    <span>$0 · On Track</span>
+                    <span>$387 · Age 55</span>
+                    <span>$600</span>
+                  </div>
+                </div>
+
+                <InsightChip text={
+                  displayExtra === 0
+                    ? 'Your standard payment keeps you on track for payoff in 2055.'
+                    : payoffPreset === 'age60'
+                    ? 'Just $141/mo more — one of the highest-impact, lowest-risk wealth moves you can make.'
+                    : payoffPreset === 'age55'
+                    ? 'By 55 you\'d own your home free and clear — 9 years of freed cash flow before most people retire.'
+                    : `Adding $${displayExtra}/mo shaves ${displayYearsSaved.toFixed(1)} years off your mortgage and saves ${formatCurrency(displayInterestSaved, true)} in interest.`
+                } />
+              </div>
+
+              {/* Right: impact stats */}
+              <div className="flex flex-col gap-3">
+                <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">Your impact at +${displayExtra}/mo</p>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    {
+                      label: 'Extra per month',
+                      value: displayExtra === 0 ? '$0' : `+$${displayExtra}`,
+                      sub: 'additional principal',
+                      green: false,
+                    },
+                    {
+                      label: 'Years saved',
+                      value: displayExtra === 0 ? '—' : `${displayYearsSaved.toFixed(1)} yrs`,
+                      sub: 'off your term',
+                      green: displayExtra > 0,
+                    },
+                    {
+                      label: 'Interest saved',
+                      value: displayExtra === 0 ? '—' : formatCurrency(displayInterestSaved, true),
+                      sub: 'total over loan life',
+                      green: displayExtra > 0,
+                    },
+                    {
+                      label: 'Payoff date',
+                      value: displayPayoff,
+                      sub: payoffPreset !== 'standard' && displayExtra > 0 ? `mortgage-free at ${activeGoal.age || Math.round(35 + 29.1 - displayYearsSaved)}` : 'standard pace',
+                      green: displayExtra > 0,
+                    },
+                  ].map(({ label, value, sub, green }) => (
+                    <div key={label} className={`p-3.5 rounded-xl border flex flex-col gap-1 ${green ? 'bg-[#F0FDF4] border-[#BBF7D0]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                      <p className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{label}</p>
+                      <p className={`text-[18px] font-bold tabular-nums leading-none ${green ? 'text-[#059669]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                      <p className="text-[10px] text-[#94A3B8]">{sub}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <button className="mt-auto w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[#C7D2FE] text-[#4F46E5] text-[13px] font-semibold hover:bg-[#EEF2FF] transition-colors">
+                  Set up autopay for extra principal <ArrowRight size={13} />
+                </button>
+              </div>
+
+            </div>
           </div>
         </motion.section>
 
