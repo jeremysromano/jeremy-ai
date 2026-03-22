@@ -471,149 +471,154 @@ export default function HomeownerPage() {
           <GroupLabel>Life Scenarios</GroupLabel>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-            {/* Move Up — enhanced (unchanged) */}
-            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-4">
-              <div>
-                <div className="w-9 h-9 rounded-xl bg-[#E6F7F3] flex items-center justify-center mb-3">
-                  <ArrowUpRight size={18} className="text-[#0F6E56]" />
-                </div>
-                <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Move Up</p>
-                <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug mb-1">
-                  Sell today → <span className="text-[#059669]">{formatCurrency(netFromSale, true)} down</span> on your next home
-                </p>
-                <p className="text-[12px] text-[#64748B] leading-relaxed">
-                  After paying off your loan and selling costs, you&apos;d net {formatCurrency(netFromSale, true)} — enough for ~15% down on these homes.
-                </p>
-              </div>
-              <div className="flex gap-2">
-                {(['prop-2', 'prop-4', 'prop-6'] as const).map((propId) => {
-                  const prop = MOCK_PROPERTIES.find(p => p.id === propId)
-                  if (!prop) return null
-                  return (
-                    <Link key={propId} href={`/search/${propId}`}
-                      className="flex-1 flex flex-col overflow-hidden rounded-xl border border-[#B2EADC] hover:border-[#0F6E56] hover:shadow-md transition-all group">
-                      {/* Photo */}
-                      <div className="w-full h-[72px] overflow-hidden">
-                        {prop.photo ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={prop.photo}
-                            alt={prop.address}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className={`w-full h-full bg-gradient-to-br ${prop.gradient}`} />
-                        )}
-                      </div>
-                      {/* Info */}
-                      <div className="bg-[#F0FBF8] group-hover:bg-[#E6F7F3] transition-colors px-2 py-2 text-center">
-                        <p className="text-[12px] font-bold text-[#0D1B2A] tabular-nums">${(prop.price / 1000).toFixed(0)}K</p>
-                        <p className="text-[10px] font-medium text-[#059669]">Comfortable</p>
-                      </div>
-                    </Link>
-                  )
-                })}
-              </div>
-              <div className="border-t border-[#F1F5F9]" />
-              <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
-                {[
-                  { label: 'Net from sale', value: formatCurrency(netFromSale, true) },
-                  { label: 'As down payment', value: `~${((netFromSale / 549000) * 100).toFixed(0)}% on $549K` },
-                  { label: 'Est. new payment', value: '$3,800/mo' },
-                  { label: 'Timeline', value: '90–120 days' },
-                ].map(({ label, value }) => (
-                  <div key={label}>
-                    <p className="text-[10px] text-[#94A3B8]">{label}</p>
-                    <p className="text-[13px] font-bold text-[#0D1B2A] tabular-nums">{value}</p>
-                  </div>
-                ))}
-              </div>
-              <Link href="/search" className="text-[12px] font-semibold text-[#059669] hover:text-[#0F6E56] flex items-center gap-1 transition-colors">
-                See all homes in range <ArrowUpRight size={12} />
-              </Link>
-            </div>
+            {/* ── Combined Move Up card — 2 col span, two bands ── */}
+            <div className="md:col-span-2 bg-white rounded-card border border-[#E2E8F0] shadow-card overflow-hidden">
 
-            {/* Keep & Rent — Sell vs. Keep decision card */}
-            <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-4">
-              {/* Header */}
-              <div>
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] flex items-center justify-center">
-                    <Home size={16} className="text-[#059669]" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#4F46E5] bg-[#EEF2FF] px-2 py-1 rounded-full border border-[#C7D2FE] uppercase tracking-wide">
-                    Sell or Keep?
+              {/* Card header */}
+              <div className="px-5 py-4 border-b border-[#F1F5F9] flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mb-0.5">Move Up</p>
+                  <p className="text-[15px] font-bold text-[#0D1B2A]">Which path fits your life right now?</p>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 text-[11px] text-[#94A3B8]">
+                  <span className="w-2 h-2 rounded-full bg-[#4F46E5] shrink-0" />Sell &amp; Move Up
+                  <span className="text-[#E2E8F0] mx-0.5">·</span>
+                  <span className="w-2 h-2 rounded-full bg-[#059669] shrink-0" />Keep &amp; Buy Next
+                </div>
+              </div>
+
+              {/* Two bands */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#F1F5F9]">
+
+                {/* ── Band A: SELL & MOVE UP ── */}
+                <div className="p-4 bg-[#F8FAFF] flex flex-col gap-3">
+                  <span className="self-start inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#4F46E5] text-white text-[10px] font-bold uppercase tracking-wide">
+                    Sell &amp; Move Up
                   </span>
-                </div>
-                <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest mb-1">Keep & Rent</p>
-                <p className="text-[15px] font-bold text-[#0D1B2A] leading-snug">
-                  Sell for <span className="text-[#4F46E5]">{formatCurrency(netFromSale, true)} down</span> — or keep and build{' '}
-                  <span className="text-[#059669]">+{formatCurrency(netWealthPerMonth, true)}/mo</span> in wealth
-                </p>
-              </div>
+                  <p className="text-[11px] text-[#64748B] leading-relaxed">
+                    Sell today → net <span className="font-semibold text-[#4F46E5]">{formatCurrency(netFromSale, true)}</span> cash.
+                    That&apos;s ~{((netFromSale / 549_000) * 100).toFixed(0)}% down on the homes below.
+                  </p>
 
-              {/* ── Path A: Sell today ── */}
-              <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-3">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <div className="w-1 h-3 rounded-full bg-[#4F46E5]" />
-                  <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">If you sold today</p>
-                </div>
-                <div className="space-y-1 mb-2.5">
-                  {[
-                    { label: 'Est. sale price', value: formatCurrency(h.currentValue), color: 'text-[#0D1B2A]' },
-                    { label: 'Selling costs (6%)', value: `−${formatCurrency(sellingCosts)}`, color: 'text-[#E11D48]' },
-                    { label: 'Loan payoff', value: `−${formatCurrency(h.loanBalance)}`, color: 'text-[#E11D48]' },
-                  ].map(({ label, value, color }) => (
-                    <div key={label} className="flex justify-between text-[11px]">
-                      <span className="text-[#64748B]">{label}</span>
-                      <span className={`font-semibold tabular-nums ${color}`}>{value}</span>
-                    </div>
-                  ))}
-                  <div className="border-t border-[#E2E8F0] pt-1.5 flex justify-between">
-                    <span className="text-[12px] font-bold text-[#0D1B2A]">Net in pocket</span>
-                    <span className="text-[12px] font-bold text-[#4F46E5] tabular-nums">{formatCurrency(netFromSale)}</span>
+                  {/* 3 property chips */}
+                  <div className="flex gap-1.5">
+                    {(['prop-2', 'prop-4', 'prop-6'] as const).map((propId) => {
+                      const prop = MOCK_PROPERTIES.find(p => p.id === propId)
+                      if (!prop) return null
+                      return (
+                        <Link key={propId} href={`/search/${propId}`}
+                          className="flex-1 flex flex-col overflow-hidden rounded-xl border border-[#C7D2FE] hover:border-[#4F46E5] hover:shadow-md transition-all group">
+                          <div className="h-[60px] overflow-hidden">
+                            {prop.photo
+                              ? <img src={prop.photo} alt={prop.address} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" /> // eslint-disable-line @next/next/no-img-element
+                              : <div className={`w-full h-full bg-gradient-to-br ${prop.gradient}`} />}
+                          </div>
+                          <div className="bg-[#EEF2FF] group-hover:bg-[#E0E7FF] transition-colors px-1.5 py-1.5 text-center">
+                            <p className="text-[11px] font-bold text-[#0D1B2A] tabular-nums">${(prop.price / 1000).toFixed(0)}K</p>
+                            <p className="text-[9px] font-semibold text-[#4F46E5]">Comfortable</p>
+                          </div>
+                        </Link>
+                      )
+                    })}
                   </div>
-                </div>
-                <div className="p-2 rounded-lg bg-[#EEF2FF] border border-[#C7D2FE]">
-                  <p className="text-[11px] font-semibold text-[#4F46E5]">
-                    → ~{((netFromSale / 549_000) * 100).toFixed(0)}% down on a $549K home · see Move Up ↑
-                  </p>
-                </div>
-              </div>
 
-              {/* ── Path B: Keep & Rent ── */}
-              <div className="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-3">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <div className="w-1 h-3 rounded-full bg-[#059669]" />
-                  <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">If you kept & rented</p>
-                </div>
-                <div className="grid grid-cols-2 gap-1.5 mb-2.5">
-                  {[
-                    { label: 'Monthly rent', value: `$${rentEstimate.toLocaleString()}` },
-                    { label: 'vs. mortgage cost', value: `−$${Math.abs(monthlyShortfall).toLocaleString()}/mo`, red: true },
-                    { label: 'Appreciation (~4%)', value: `+$${monthlyAppreciation.toLocaleString()}/mo`, green: true },
-                    { label: 'Cap rate est.', value: '4.2%' },
-                  ].map(({ label, value, green, red }) => (
-                    <div key={label} className="p-2 rounded-lg bg-white border border-[#E2E8F0]">
-                      <p className="text-[10px] text-[#94A3B8]">{label}</p>
-                      <p className={`text-[12px] font-bold tabular-nums ${green ? 'text-[#059669]' : red ? 'text-[#E11D48]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                  {/* Mini sell receipt */}
+                  <div className="rounded-xl border border-[#E2E8F0] bg-white p-2.5 space-y-1">
+                    {[
+                      { label: 'Sale price', value: formatCurrency(h.currentValue) },
+                      { label: 'Costs (6%)', value: `−${formatCurrency(sellingCosts)}`, red: true },
+                      { label: 'Loan payoff', value: `−${formatCurrency(h.loanBalance)}`, red: true },
+                    ].map(({ label, value, red }) => (
+                      <div key={label} className="flex justify-between text-[11px]">
+                        <span className="text-[#94A3B8]">{label}</span>
+                        <span className={`font-semibold tabular-nums ${red ? 'text-[#E11D48]' : 'text-[#64748B]'}`}>{value}</span>
+                      </div>
+                    ))}
+                    <div className="border-t border-[#F1F5F9] pt-1 flex justify-between">
+                      <span className="text-[12px] font-bold text-[#0D1B2A]">Net in pocket</span>
+                      <span className="text-[12px] font-bold text-[#4F46E5] tabular-nums">{formatCurrency(netFromSale)}</span>
                     </div>
-                  ))}
-                </div>
-                <div className="p-2 rounded-lg bg-[#DCFCE7] border border-[#BBF7D0]">
-                  <p className="text-[11px] font-semibold text-[#166534]">
-                    Net wealth gain: <span className="text-[#059669]">+{formatCurrency(netWealthPerMonth, true)}/mo</span>
-                    {' '}— vs {formatCurrency(netFromSale, true)} lump from selling
-                  </p>
-                </div>
-              </div>
+                  </div>
 
-              <button className="flex items-center gap-1 text-[12px] font-semibold text-[#059669] hover:text-[#047857] transition-colors">
-                Model rental scenario <ArrowRight size={12} />
-              </button>
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                    {[
+                      { label: 'Est. new payment', value: '$3,800/mo' },
+                      { label: 'Timeline', value: '90–120 days' },
+                    ].map(({ label, value }) => (
+                      <div key={label}>
+                        <p className="text-[10px] text-[#94A3B8]">{label}</p>
+                        <p className="text-[12px] font-bold text-[#0D1B2A] tabular-nums">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Link href="/search" className="mt-auto text-[11px] font-semibold text-[#4F46E5] hover:text-[#3730A3] flex items-center gap-1 transition-colors">
+                    See all homes in range <ArrowUpRight size={11} />
+                  </Link>
+                </div>
+
+                {/* ── Band B: KEEP & BUY NEXT ── */}
+                <div className="p-4 bg-[#F0FDF4] flex flex-col gap-3">
+                  <span className="self-start inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#059669] text-white text-[10px] font-bold uppercase tracking-wide">
+                    Keep &amp; Buy Next
+                  </span>
+                  <p className="text-[11px] text-[#64748B] leading-relaxed">
+                    Rent this home (<span className="font-semibold text-[#059669]">$3,200/mo</span>), keep the $84K, and use your
+                    ~$45K savings as down payment on a new home.
+                  </p>
+
+                  {/* 2 more affordable property chips */}
+                  <div className="flex gap-1.5">
+                    {(['prop-3', 'prop-5'] as const).map((propId) => {
+                      const prop = MOCK_PROPERTIES.find(p => p.id === propId)
+                      if (!prop) return null
+                      return (
+                        <Link key={propId} href={`/search/${propId}`}
+                          className="flex-1 flex flex-col overflow-hidden rounded-xl border border-[#BBF7D0] hover:border-[#059669] hover:shadow-md transition-all group">
+                          <div className="h-[60px] overflow-hidden">
+                            {prop.photo
+                              ? <img src={prop.photo} alt={prop.address} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" /> // eslint-disable-line @next/next/no-img-element
+                              : <div className={`w-full h-full bg-gradient-to-br ${prop.gradient}`} />}
+                          </div>
+                          <div className="bg-[#DCFCE7] group-hover:bg-[#BBF7D0] transition-colors px-1.5 py-1.5 text-center">
+                            <p className="text-[11px] font-bold text-[#0D1B2A] tabular-nums">${(prop.price / 1000).toFixed(0)}K</p>
+                            <p className="text-[9px] font-semibold text-[#059669]">Savings only</p>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+
+                  {/* Keep & Rent stats */}
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {[
+                      { label: 'Rental income', value: '$3,200/mo' },
+                      { label: 'Monthly shortfall', value: `−$${Math.abs(monthlyShortfall).toLocaleString()}`, red: true },
+                      { label: 'Appreciation/mo', value: `+$${monthlyAppreciation.toLocaleString()}`, green: true },
+                      { label: 'Net wealth/mo', value: `+${formatCurrency(netWealthPerMonth, true)}`, green: true },
+                    ].map(({ label, value, green, red }) => (
+                      <div key={label} className="p-2 rounded-xl bg-white border border-[#E2E8F0]">
+                        <p className="text-[10px] text-[#94A3B8]">{label}</p>
+                        <p className={`text-[12px] font-bold tabular-nums ${green ? 'text-[#059669]' : red ? 'text-[#E11D48]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-[#DCFCE7] border border-[#BBF7D0]">
+                    <p className="text-[11px] font-semibold text-[#166534]">
+                      Two assets growing · building <span className="text-[#059669]">+{formatCurrency(netWealthPerMonth, true)}/mo</span> in wealth
+                    </p>
+                  </div>
+
+                  <button className="mt-auto text-[11px] font-semibold text-[#059669] hover:text-[#047857] flex items-center gap-1 transition-colors">
+                    Model this path <ArrowRight size={11} />
+                  </button>
+                </div>
+
+              </div>
             </div>
 
-            {/* Remodel */}
+            {/* ── Remodel — 1 col ── */}
             <div className="bg-white rounded-card border border-[#E2E8F0] shadow-card p-5 flex flex-col gap-3">
               <div>
                 <div className="w-9 h-9 rounded-xl bg-[#FEF3C7] flex items-center justify-center mb-3">
@@ -624,14 +629,19 @@ export default function HomeownerPage() {
                   Kitchen remodel → <span className="text-[#D97706]">+$45K value</span>
                 </p>
                 <p className="text-[12px] text-[#64748B] leading-relaxed">
-                  At your current equity and home value, a $30K kitchen remodel returns 150% — one of the highest ROI home improvements.
+                  At your current equity, a $30K kitchen remodel returns 150% — one of the highest ROI home improvements.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {[{ label: 'Est. cost', value: '$28–32K' }, { label: 'Value added', value: '+$45K', amber: true }, { label: 'ROI', value: '~150%', amber: true }, { label: 'Timeline', value: '6–8 weeks' }].map(({ label, value, amber }) => (
-                  <div key={label} className={`p-2 rounded-xl border ${amber ? 'bg-[#FFFBEB] border-[#FDE68A]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
+                {[
+                  { label: 'Est. cost', value: '$28–32K' },
+                  { label: 'Value added', value: '+$45K', amber: true },
+                  { label: 'ROI', value: '~150%', amber: true },
+                  { label: 'Timeline', value: '6–8 weeks' },
+                ].map(({ label, value, amber }) => (
+                  <div key={label} className={`p-2.5 rounded-xl border ${amber ? 'bg-[#FFFBEB] border-[#FDE68A]' : 'bg-[#F8FAFC] border-[#E2E8F0]'}`}>
                     <p className="text-[10px] text-[#94A3B8]">{label}</p>
-                    <p className={`text-[12px] font-bold tabular-nums ${amber ? 'text-[#D97706]' : 'text-[#0D1B2A]'}`}>{value}</p>
+                    <p className={`text-[13px] font-bold tabular-nums ${amber ? 'text-[#D97706]' : 'text-[#0D1B2A]'}`}>{value}</p>
                   </div>
                 ))}
               </div>
@@ -639,6 +649,7 @@ export default function HomeownerPage() {
                 See remodel ROI <ArrowRight size={12} />
               </button>
             </div>
+
           </div>
         </motion.section>
 
