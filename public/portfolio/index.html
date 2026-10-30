@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jeremy Romano Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Jeremy Romano — experience, product and transformation leadership in mortgage and financial services.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Clean Sci-Fi Pro design system — dark first, light alternative.
+   Layout: 1200px shell, 720px reading column, visuals break out to 1040px; chapters separated by hairlines, not cards. */
+:root {
+  color-scheme: dark;
+  --color-page: #0B1120; --color-surface: #111A2E; --color-elevated: #1A2440;
+  --color-text: #F5F5F7; --color-text-secondary: #A7AEC2; --color-text-tertiary: #8E97AD; --color-disabled: #4A5675;
+  --color-border: #26314D; --color-border-strong: #4A5675;
+  --color-accent: #00F0FF; --color-on-accent: #0B1120;
+  --color-violet: #9437FF; --color-violet-text: #B383FF; --color-mint: #66D7B9;
+  --shadow-focus: 0 0 0 3px rgba(0, 240, 255, .28);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, .28);
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-size-display: 4rem; --font-size-h1: 3rem; --font-size-h2: 2.125rem; --font-size-h3: 1.625rem; --font-size-h4: 1.25rem;
+  --font-size-lead: 1.3125rem; --font-size-body: 1.0625rem; --font-size-body-sm: .9375rem; --font-size-caption: .8125rem;
+  --font-size-label: .75rem; --font-size-metric: 2.75rem; --font-size-button: .875rem;
+  --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-6: 1.5rem; --space-8: 2rem;
+  --space-10: 2.5rem; --space-12: 3rem; --space-16: 4rem; --space-20: 5rem; --space-24: 6rem;
+  --radius-xs: .25rem; --radius-sm: .5rem; --radius-md: .75rem; --radius-lg: 1rem; --radius-pill: 9999px;
+  --layout-shell: 75rem; --layout-article: 45rem; --layout-media: 65rem; --layout-gutter: 2rem;
+  --motion-fast: 150ms; --motion-standard: 200ms;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --color-page: #F5F5F7; --color-surface: #FFFFFF; --color-elevated: #FFFFFF;
+    --color-text: #1D1D1F; --color-text-secondary: #4A4A52; --color-text-tertiary: #585862; --color-disabled: #8E8E93;
+    --color-border: #D2D2D7; --color-border-strong: #8E8E93;
+    --color-accent: #006F7A; --color-on-accent: #FFFFFF;
+    --color-violet: #6D28D9; --color-violet-text: #6D28D9; --color-mint: #006B55;
+    --shadow-focus: 0 0 0 3px rgba(0, 111, 122, .25);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-page: #F5F5F7; --color-surface: #FFFFFF; --color-elevated: #FFFFFF;
+  --color-text: #1D1D1F; --color-text-secondary: #4A4A52; --color-text-tertiary: #585862; --color-disabled: #8E8E93;
+  --color-border: #D2D2D7; --color-border-strong: #8E8E93;
+  --color-accent: #006F7A; --color-on-accent: #FFFFFF;
+  --color-violet: #6D28D9; --color-violet-text: #6D28D9; --color-mint: #006B55;
+  --shadow-focus: 0 0 0 3px rgba(0, 111, 122, .25);
+}
+@media (max-width: 1023px) { :root { --layout-gutter: 1.25rem; } }
+@media (max-width: 767px) {
+  :root { --font-size-display: 2.5rem; --font-size-h1: 2.125rem; --font-size-h2: 1.75rem; --font-size-h3: 1.375rem;
+    --font-size-lead: 1.125rem; --font-size-body: 1rem; --font-size-metric: 2.25rem; --layout-gutter: 1rem; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body {
+  margin: 0; background: var(--color-page); color: var(--color-text);
+  font: 400 var(--font-size-body)/1.7 var(--font-sans); letter-spacing: -.01em;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--color-page); }
+h1, h2, h3, h4 { text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--color-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; box-shadow: var(--shadow-focus); }
+img { display: block; max-width: 100%; height: auto; }
+.vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Shell */
+.shell {
+  width: 100%; max-width: calc(var(--layout-shell) + 2 * max(var(--layout-gutter), 16px)); margin-inline: auto;
+  padding-left: max(var(--layout-gutter), 16px, env(safe-area-inset-left, 0px));
+  padding-right: max(var(--layout-gutter), 16px, env(safe-area-inset-right, 0px));
+}
+.reading { max-width: var(--layout-article); }
+.media-w { max-width: var(--layout-media); }
+
+/* Type helpers */
+.eyebrow { display: inline-block; font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--color-accent); }
+.eyebrow.muted { color: var(--color-text-tertiary); }
+.eyebrow.violet { color: var(--color-violet-text); }
+.lead { font-size: var(--font-size-lead); line-height: 1.55; color: var(--color-text-secondary); max-width: 60ch; }
+.body { color: var(--color-text-secondary); max-width: 68ch; }
+.body-sm { font-size: var(--font-size-body-sm); line-height: 1.6; letter-spacing: 0; color: var(--color-text-secondary); }
+.caption { font-size: var(--font-size-caption); line-height: 1.5; letter-spacing: 0; color: var(--color-text-tertiary); }
+.h3 { font-size: var(--font-size-h3); line-height: 1.25; letter-spacing: -.02em; font-weight: 600; margin: 0; }
+.h4 { font-size: var(--font-size-h4); line-height: 1.35; letter-spacing: -.01em; font-weight: 600; margin: 0; color: var(--color-text); }
+.stack { display: grid; gap: var(--space-4); }
+.stack-lg { display: grid; gap: var(--space-8); }
+
+/* Header */
+.header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--color-page); border-bottom: 1px solid var(--color-border); }
+.header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; flex-wrap: wrap; }
+.wordmark { font: 700 15px/1.2 var(--font-sans); letter-spacing: -.03em; color: var(--color-text); text-decoration: none; padding-block: var(--space-3); }
+.nav { display: flex; align-items: center; gap: var(--space-4); }
+.nav ul { display: flex; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: var(--space-2); font-size: 14px; color: var(--color-text-secondary); text-decoration: none; border-bottom: 2px solid transparent; transition: color var(--motion-fast) ease-out, border-color var(--motion-fast) ease-out; }
+.nav a:hover { color: var(--color-text); }
+.nav a[aria-current="true"] { color: var(--color-text); border-bottom-color: var(--color-accent); }
+.btn.menu-btn { display: none; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 44px; padding: 10px 18px; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: transparent; color: var(--color-text); font: 600 var(--font-size-button)/1.2 var(--font-sans); letter-spacing: .01em; text-decoration: none; cursor: pointer; transition: border-color var(--motion-fast) ease-out, opacity var(--motion-fast) ease-out, background-color var(--motion-fast) ease-out; }
+.btn:hover { border-color: var(--color-accent); text-decoration: none; }
+.btn:active { background: var(--color-elevated); }
+.btn--primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+.btn--primary:hover { opacity: .9; }
+@media (max-width: 899px) {
+  .btn.menu-btn { display: inline-flex; }
+  .nav { display: none; width: 100%; flex-direction: column; align-items: stretch; padding-bottom: var(--space-4); }
+  .header.is-open .nav { display: flex; }
+  .nav ul { flex-direction: column; }
+  .nav a { width: 100%; border-bottom: 1px solid var(--color-border); }
+  .nav a[aria-current="true"] { border-bottom-color: var(--color-border); box-shadow: inset 2px 0 0 var(--color-accent); padding-left: var(--space-3); }
+}
+
+/* Hero */
+.hero { padding-block: var(--space-24) var(--space-16); }
+.hero h1 { margin: var(--space-4) 0 var(--space-6); font-size: var(--font-size-display); line-height: 1.08; letter-spacing: -.045em; font-weight: 600; }
+.hero h1 span { display: block; }
+.hero h1 .dim { color: var(--color-text-tertiary); }
+.hero .tagline { margin-top: var(--space-4); color: var(--color-text); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-8); }
+.facts { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin: var(--space-12) 0 0; padding: var(--space-4) 0 0; list-style: none; border-top: 1px solid var(--color-border); }
+.facts li { font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); }
+@media (max-width: 767px) { .hero { padding-block: var(--space-16) var(--space-12); } }
+
+/* Sections */
+.section { padding-block: var(--space-20); border-top: 1px solid var(--color-border); }
+.section-head { max-width: var(--layout-article); margin-bottom: var(--space-10); display: grid; gap: var(--space-3); }
+.section-head h2 { margin: 0; font-size: var(--font-size-h2); line-height: 1.18; letter-spacing: -.025em; font-weight: 600; }
+.chapter-head h2 { font-size: var(--font-size-h1); line-height: 1.12; letter-spacing: -.035em; font-weight: 650; }
+.sub { margin-top: var(--space-16); display: grid; gap: var(--space-6); }
+.sub-head { max-width: var(--layout-article); display: grid; gap: var(--space-2); }
+.sub-head h3 { font-size: var(--font-size-h3); line-height: 1.25; letter-spacing: -.02em; font-weight: 600; margin: 0; }
+@media (max-width: 767px) { .section { padding-block: var(--space-12); } .sub { margin-top: var(--space-12); } }
+
+/* Grids */
+.grid { display: grid; gap: var(--space-6); }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.g5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1023px) { .g4, .g5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .g2, .g3, .g4, .g5 { grid-template-columns: 1fr; } }
+
+/* Card */
+.card { min-width: 0; padding: var(--space-6); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); display: grid; gap: var(--space-2); align-content: start; }
+.card .eyebrow { margin-bottom: var(--space-1); }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border-top: 1px solid var(--color-border); }
+.metric { display: flex; flex-direction: column; padding: var(--space-8) var(--space-8) var(--space-8) 0; border-bottom: 1px solid var(--color-border); min-width: 0; }
+.metric:not(:nth-child(3n+1)) { padding-left: var(--space-8); border-left: 1px solid var(--color-border); }
+.metric dd.v { order: 1; margin: 0 0 var(--space-2); font-size: var(--font-size-metric); line-height: 1.1; letter-spacing: -.035em; font-weight: 600; color: var(--color-text); font-variant-numeric: tabular-nums; }
+.metric dd.v .acc { color: var(--color-accent); }
+.metric dt { order: 2; font-size: var(--font-size-body-sm); line-height: 1.5; letter-spacing: 0; color: var(--color-text-secondary); }
+.metric dd.q { order: 3; margin: var(--space-1) 0 0; font-size: var(--font-size-caption); line-height: 1.5; color: var(--color-text-tertiary); }
+.metrics.m4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.metrics.m4 .metric:not(:nth-child(3n+1)) { padding-left: 0; border-left: 0; }
+.metrics.m4 .metric:not(:nth-child(4n+1)) { padding-left: var(--space-8); border-left: 1px solid var(--color-border); }
+@media (max-width: 899px) {
+  .metrics, .metrics.m4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metrics .metric:not(:nth-child(3n+1)), .metrics.m4 .metric:not(:nth-child(4n+1)) { padding-left: 0; border-left: 0; }
+  .metrics .metric:nth-child(2n), .metrics.m4 .metric:nth-child(2n) { padding-left: var(--space-6); border-left: 1px solid var(--color-border); }
+}
+@media (max-width: 479px) {
+  .metrics, .metrics.m4 { grid-template-columns: 1fr; }
+  .metrics .metric:nth-child(2n), .metrics.m4 .metric:nth-child(2n) { padding-left: 0; border-left: 0; }
+  .metric { padding-block: var(--space-6); }
+}
+
+/* Proof list (four things I do) */
+.proof { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-border); }
+.proof li { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 260px); gap: var(--space-6); padding-block: var(--space-6); border-bottom: 1px solid var(--color-border); align-items: start; }
+.proof .num { font: 500 var(--font-size-label)/2.2 var(--font-mono); letter-spacing: .1em; color: var(--color-accent); }
+.proof h3 { margin: 0 0 var(--space-1); font-size: var(--font-size-h4); line-height: 1.35; letter-spacing: -.01em; font-weight: 600; }
+.proof h3 a { color: var(--color-text); text-decoration: none; }
+.proof h3 a:hover { color: var(--color-accent); }
+.proof .res b { display: block; font-size: var(--font-size-h3); line-height: 1.2; letter-spacing: -.02em; font-weight: 600; color: var(--color-text); }
+@media (max-width: 767px) { .proof li { grid-template-columns: 40px minmax(0, 1fr); } .proof .res { grid-column: 2; } }
+
+/* LUCID */
+.lucid .letter { font: 600 3.5rem/1 var(--font-sans); letter-spacing: -.04em; color: var(--color-accent); margin-bottom: var(--space-3); }
+
+/* Figures */
+figure { margin: 0; min-width: 0; }
+.frame { position: relative; display: block; width: 100%; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: 0; }
+.frame img { width: 100%; height: auto; }
+figcaption { margin-top: var(--space-3); max-width: 68ch; font-size: var(--font-size-caption); line-height: 1.5; letter-spacing: 0; color: var(--color-text-tertiary); }
+figcaption b { color: var(--color-text-secondary); font-weight: 600; }
+.ba-label { display: block; margin-bottom: var(--space-2); }
+
+/* Split layouts */
+.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-10); align-items: start; }
+.split.rev { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+@media (max-width: 899px) { .split, .split.rev { grid-template-columns: 1fr; gap: var(--space-8); } }
+
+/* Findings / rules lists */
+.findings { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); border-top: 1px solid var(--color-border); padding-top: var(--space-4); }
+.findings li { font-size: var(--font-size-body-sm); line-height: 1.5; letter-spacing: 0; color: var(--color-text); font-weight: 500; }
+@media (max-width: 899px) { .findings { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 479px) { .findings { grid-template-columns: 1fr; } }
+.callout { font-size: var(--font-size-h4); line-height: 1.4; letter-spacing: -.01em; font-weight: 600; color: var(--color-text); max-width: 52ch; }
+.callout .acc { color: var(--color-accent); }
+
+/* Fidelity steps */
+.fidelity { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; align-items: center; }
+.fidelity li { display: flex; align-items: center; gap: var(--space-2); font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-secondary); }
+.fidelity li span { padding: 4px var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-xs); background: var(--color-elevated); }
+.fidelity li:not(:last-child)::after { content: "→"; color: var(--color-text-tertiary); font-family: var(--font-sans); }
+
+/* Tags */
+.tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.tag { display: inline-flex; align-items: center; min-height: 24px; padding: 2px var(--space-2); border: 1px solid var(--color-border); border-radius: var(--radius-xs); background: var(--color-elevated); font: 500 var(--font-size-label)/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--color-text-secondary); white-space: nowrap; }
+.tag.acc { color: var(--color-accent); }
+.tag.violet { color: var(--color-violet-text); }
+.tag.mint { color: var(--color-mint); }
+
+/* Leadership bar 10/80/10 */
+.lead-bar { display: grid; grid-template-columns: 1fr 8fr 1fr; gap: var(--space-2); }
+.lead-bar div { padding: var(--space-2) var(--space-3); border-radius: var(--radius-xs); font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-align: center; }
+.lead-bar .edge { background: var(--color-accent); color: var(--color-on-accent); }
+.lead-bar .mid { background: var(--color-elevated); border: 1px solid var(--color-border); color: var(--color-text-secondary); }
+@media (max-width: 479px) { .lead-bar { grid-template-columns: 1fr 3fr 1fr; } }
+.ladder { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; align-items: center; }
+.ladder li { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-body-sm); color: var(--color-text-secondary); }
+.ladder li:not(:last-child)::after { content: "→"; color: var(--color-text-tertiary); }
+.ladder li.end { color: var(--color-accent); font-weight: 600; }
+.plain-list { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-1); }
+.plain-list li::marker { color: var(--color-text-tertiary); }
+
+/* Moments (paid / due / late) */
+.moment { display: grid; gap: var(--space-2); padding-top: var(--space-4); border-top: 2px solid var(--color-border-strong); }
+.moment.mint { border-top-color: var(--color-mint); }
+.moment.violet { border-top-color: var(--color-violet-text); }
+.moment.acc { border-top-color: var(--color-accent); }
+.moment q { display: block; quotes: none; font-size: var(--font-size-body-sm); line-height: 1.5; color: var(--color-text); font-weight: 500; }
+
+/* Steps (Phoenix Burst) */
+.steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); counter-reset: s; }
+.steps li { counter-increment: s; display: grid; gap: var(--space-1); padding-top: var(--space-4); border-top: 1px solid var(--color-border-strong); }
+.steps li::before { content: "0" counter(s); font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .1em; color: var(--color-accent); }
+.steps li.human { border-top: 2px solid var(--color-accent); }
+@media (max-width: 899px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 479px) { .steps { grid-template-columns: 1fr; } }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: var(--font-size-body-sm); line-height: 1.5; letter-spacing: 0; }
+caption { caption-side: top; padding-bottom: var(--space-3); text-align: left; font-size: var(--font-size-caption); color: var(--color-text-tertiary); }
+th, td { padding: var(--space-4) var(--space-6) var(--space-4) 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--color-border); }
+thead th { font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); border-bottom-color: var(--color-border-strong); }
+tbody th { font-weight: 600; color: var(--color-text); }
+tbody th small { display: block; font-weight: 400; color: var(--color-text-tertiary); font-size: var(--font-size-caption); }
+td { color: var(--color-text-secondary); }
+td b { color: var(--color-text); font-weight: 600; }
+
+/* Timeline (career) */
+.timeline { margin: 0; padding: 0 0 0 var(--space-6); list-style: none; border-left: 2px solid var(--color-violet-text); display: grid; gap: var(--space-8); }
+.timeline li { display: grid; gap: var(--space-1); padding-left: var(--space-2); }
+.timeline .when { font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--color-violet-text); }
+.timeline .role { font-weight: 600; color: var(--color-text); }
+.timeline .org { color: var(--color-text-tertiary); font-size: var(--font-size-body-sm); }
+
+/* Accordion */
+.acc-list { border-top: 1px solid var(--color-border); }
+.acc-item { border-bottom: 1px solid var(--color-border); }
+.acc-item h3 { margin: 0; }
+.acc-trigger { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 56px; padding: var(--space-3) 0; border: 0; background: transparent; color: var(--color-text); font: 600 var(--font-size-body)/1.4 var(--font-sans); letter-spacing: -.01em; text-align: left; cursor: pointer; }
+.acc-trigger:hover { color: var(--color-accent); }
+.acc-trigger small { display: block; font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-top: 2px; }
+.acc-icon { position: relative; flex: none; width: 12px; height: 12px; }
+.acc-icon::before, .acc-icon::after { content: ""; position: absolute; left: 0; top: 5px; width: 12px; height: 2px; background: currentColor; transition: transform var(--motion-standard) ease-out; }
+.acc-icon::after { transform: rotate(90deg); }
+.acc-trigger[aria-expanded="true"] .acc-icon::after { transform: rotate(0deg); }
+.acc-panel { padding: 0 0 var(--space-6); max-width: 68ch; }
+.acc-panel ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-2); font-size: var(--font-size-body-sm); line-height: 1.6; letter-spacing: 0; color: var(--color-text-secondary); }
+
+/* Closing */
+.closing h2 { margin: var(--space-4) 0 var(--space-6); font-size: var(--font-size-h1); line-height: 1.12; letter-spacing: -.035em; font-weight: 650; }
+.closing h2 span { display: block; color: var(--color-accent); }
+.feelings { margin-top: var(--space-6); font-weight: 600; color: var(--color-text); }
+.contact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); margin-top: var(--space-12); }
+@media (max-width: 767px) { .contact { grid-template-columns: 1fr; } }
+.contact .val { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; font-size: var(--font-size-body); color: var(--color-text); user-select: all; word-break: break-word; }
+.copy { min-height: 32px; padding: 4px var(--space-3); font-size: 12px; user-select: none; }
+
+/* Footer */
+.footer { padding-block: var(--space-12); border-top: 1px solid var(--color-border); }
+.footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); font-size: var(--font-size-caption); line-height: 1.5; color: var(--color-text-tertiary); }
+
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="header" id="top">
+  <div class="shell header__inner">
+    <a class="wordmark" href="#intro">JEREMY ROMANO</a>
+    <button class="btn menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" id="menu-btn">Menu</button>
+    <nav class="nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#see-the-work">Work</a></li>
+        <li><a href="#approach">Approach</a></li>
+        <li><a href="#ai">AI</a></li>
+        <li><a href="#career">Career</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="btn" type="button" id="theme-btn" aria-label="Switch color theme">Light</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="shell hero" id="intro" aria-labelledby="hero-title">
+    <div class="reading">
+      <span class="eyebrow">Experience · Product · Transformation</span>
+      <h1 id="hero-title"><span>Mortgages will always be complex.</span><span class="dim">My job is to make them feel simple.</span></h1>
+      <p class="lead">I lead teams that build better customer and employee experiences, with outcomes that matter to them and to the business.</p>
+      <p class="tagline">Designer at heart. Product and transformation executive by trade.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="#see-the-work">See the work</a>
+        <a class="btn" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <ul class="facts" aria-label="At a glance">
+      <li>20+ years</li><li>Mortgage · Fintech · SaaS</li><li>Customer + employee experience</li><li>AI-enabled transformation</li><li>Temecula, CA · Remote</li>
+    </ul>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="section shell" id="results" aria-labelledby="results-title">
+    <div class="section-head">
+      <span class="eyebrow">Results up front</span>
+      <h2 id="results-title">Outcomes delivered with the teams I led</h2>
+      <p class="body">A mortgage is the biggest financial decision most people ever make. Borrowers face documents, deadlines and trade-offs they don't fully understand, and loan teams carry it across fragmented systems. Every gap shows up as a delay, a phone call or a lost customer. My career has been about closing those gaps.</p>
+    </div>
+    <dl class="metrics">
+      <div class="metric"><dt>Guild's loan volume growth while I led digital product and experience modernization</dt><dd class="v">$15B <span class="acc">→</span> $35B</dd></div>
+      <div class="metric"><dt>Guild servicing retention during customer-lifecycle and digital-servicing modernization</dt><dd class="v">70%+</dd></div>
+      <div class="metric"><dt>Digital-statement adoption across the servicing portfolio</dt><dd class="v">20% <span class="acc">→</span> ~60%</dd><dd class="q">200K+ serviced loans</dd></div>
+      <div class="metric"><dt>Person product organization built and led through three directors</dt><dd class="v">75+</dd><dd class="q">Portfolio · BI &amp; Reporting · UX &amp; Research</dd></div>
+      <div class="metric"><dt>Annual modernization portfolio directed across 12 product teams</dt><dd class="v">$20M+</dd></div>
+      <div class="metric"><dt>Shorter release cycles, from months to weeks, through product governance and SDLC modernization</dt><dd class="v">70%+</dd></div>
+    </dl>
+    <p class="caption" style="margin-top: var(--space-6)">Also: contributed to Guild's J.D. Power No. 1 origination satisfaction (2021) and No. 2 servicing rankings (2021, 2023). Phoenix Burst received a 2025 MortgagePoint Tech Excellence Award.</p>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow muted">The short version</span>
+        <h3>Four things I do, and the proof for each</h3>
+      </div>
+      <ol class="proof">
+        <li><span class="num" aria-hidden="true">01</span><div><h3><a href="#see-the-work">Go see the work before we design anything.</a></h3><p class="body-sm">Interviews and click-paths, a 64-day study of one live loan, a 15-year system audit, the war-room walls.</p></div><p class="res body-sm"><b>~5 days</b>lost per underwriting rework loop, found</p></li>
+        <li><span class="num" aria-hidden="true">02</span><div><h3><a href="#make-it-tangible">Make the future tangible before we build it.</a></h3><p class="body-sm">Needs finding, job mapping, process and bottleneck analysis, then prototypes from sketch to wireframe to high fidelity.</p></div><p class="res body-sm"><b>10 days</b>off loan cycle time; loan officers, live: "PHENOMENAL time saver"</p></li>
+        <li><span class="num" aria-hidden="true">03</span><div><h3><a href="#scale-it">Scale the work through systems and people.</a></h3><p class="body-sm">The CEO and C-suite deciding alongside researchers, designers and developers; one design system for 12 product teams and 100+ developers.</p></div><p class="res body-sm"><b>Up to 5×</b>page views and ~2× lead conversion on selected sites</p></li>
+        <li><span class="num" aria-hidden="true">04</span><div><h3><a href="#whole-relationship">Design the whole relationship, across every channel.</a></h3><p class="body-sm">One message across SMS, email, web and mobile; payment-moment messages; the borrower calendar; Guild to Go.</p></div><p class="res body-sm"><b>20% → ~60%</b>digital adoption across 200K+ loans</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CHAPTER 1 -->
+  <section class="section shell" id="see-the-work" aria-labelledby="c1-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">01 / See the work · PHH Mortgage</span>
+      <h2 id="c1-title">I go see the work before I design anything.</h2>
+      <p class="lead">Before choosing a solution, we found where the work actually got stuck, by watching it happen.</p>
+    </div>
+
+    <div class="grid g4">
+      <div class="card"><span class="eyebrow">Qualitative</span><p class="h4">Interviews</p><p class="body-sm">Loan officers, processors, underwriters and borrowers on where the work breaks down.</p></div>
+      <div class="card"><span class="eyebrow">Quantitative</span><p class="h4">Time and motion</p><p class="body-sm">Followed live loans day by day, logging every touch, call and handoff.</p></div>
+      <div class="card"><span class="eyebrow">Quantitative</span><p class="h4">Click-path analysis</p><p class="body-sm">Measured the clicks, screens and system hops each task required.</p></div>
+      <div class="card"><span class="eyebrow violet">Both</span><p class="h4">System audit</p><p class="body-sm">Rated every application on usefulness, effectiveness, scalability and support.</p></div>
+    </div>
+
+    <figure class="sub">
+      <div class="frame"><img src="/portfolio/img/journey-map.jpg" alt="Current-state loan journey map showing systems, handoffs and repeated underwriting rework loops across the loan lifecycle." width="1800" height="335" loading="lazy"></div>
+      <figcaption><b>Current-state loan journey.</b> Every underwriting rework loop added about five days of waiting. The biggest delays were handoffs between people; no single screen fix would solve that.</figcaption>
+    </figure>
+
+    <div class="sub">
+      <div class="sub-head">
+        <h3>We followed one live loan for 64 days and logged every touch</h3>
+        <p class="body">A Gemba walk: shadowing the loan team day by day, noting what helped, what hurt and why.</p>
+      </div>
+      <div class="grid g2">
+        <figure><div class="frame"><img src="/portfolio/img/loan-log-1.jpg" alt="Day-by-day log of a live loan with good and bad touchpoints marked and annotated findings about expectations and documentation." width="1572" height="1034" loading="lazy"></div><figcaption>Days 10–25: expectations were not set upstream.</figcaption></figure>
+        <figure><div class="frame"><img src="/portfolio/img/loan-log-2.jpg" alt="Continuation of the live-loan log with annotations about appraisal coordination breakdowns and phone volume." width="1557" height="1034" loading="lazy"></div><figcaption>Days 25–64: appraisal coordination and status calls.</figcaption></figure>
+      </div>
+      <ul class="findings" aria-label="What we found">
+        <li>Expectations were not set upstream</li>
+        <li>Poor access to information created avoidable calls</li>
+        <li>Appraisal coordination became a handoff constraint</li>
+        <li>Simple changes required unnecessary effort</li>
+      </ul>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <h3>15 years of point solutions left us with a fragmented LOS</h3>
+        <p class="body">Data gaps, unclear status and manual workarounds turned the loan origination system itself into a constraint.</p>
+      </div>
+      <div class="grid g2">
+        <figure><div class="frame"><img src="/portfolio/img/app-history.jpg" alt="Timeline of PHH origination applications from 1995 onward, colored by health from green to red." width="1589" height="1158" loading="lazy"></div><figcaption>Application history: layer upon layer of tools, most rated poor.</figcaption></figure>
+        <figure><div class="frame"><img src="/portfolio/img/los-audit.jpg" alt="System audit scorecard rating each application on usefulness, effectiveness, scalability and support, with what we like and don't like." width="1612" height="1158" loading="lazy"></div><figcaption>The audit: too complex, brittle and difficult. No silver bullets.</figcaption></figure>
+      </div>
+      <p class="callout">Conclusion: no single system fix would work. <span class="acc">We redesigned around the tasks people actually do.</span></p>
+    </div>
+
+    <figure class="sub">
+      <div class="sub-head">
+        <h3>We put the whole problem on the wall so everyone could see it</h3>
+        <p class="body">Walls, maps and sketches gave executives, operators, product and technology one shared picture of the problem.</p>
+      </div>
+      <div class="frame"><img src="/portfolio/img/war-room.jpg" alt="Collage of war-room walls: journey maps, sticky-note clusters, whiteboard sketches of borrower and loan-officer screens, and a design review." width="1800" height="785" loading="lazy"></div>
+    </figure>
+  </section>
+
+  <!-- CHAPTER 2 -->
+  <section class="section shell" id="make-it-tangible" aria-labelledby="c2-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">02 / Make it tangible · PHH Mortgage · Guild</span>
+      <h2 id="c2-title">I make the future tangible before we build it.</h2>
+      <p class="lead">Sketches, wireframes and full workspace designs let people react to something real, early and cheaply.</p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="stack">
+        <h3 class="h3">I start with the roughest version that gets us to the next decision</h3>
+        <ol class="fidelity" aria-label="Fidelity ladder"><li><span>Napkin</span></li><li><span>Sketch</span></li><li><span>Low fidelity</span></li><li><span>High fidelity</span></li><li><span>Pixel perfect</span></li></ol>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/sketch-wireframe.jpg" alt="Pencil sketches of a mortgage homepage beside the low-fidelity wireframes they became." width="1800" height="584" loading="lazy"></div><figcaption><b>Sketch → low-fidelity wireframe.</b> The same homepage, from pencil to wireframe.</figcaption></figure>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Employee experience</span>
+        <h3>We designed the processor's whole workspace before writing code</h3>
+        <p class="body">Pipeline, prioritization, document review, conditions and borrower context in one role-based workspace.</p>
+      </div>
+      <div class="split">
+        <div class="stack">
+          <div class="card"><p class="h4">Pipeline at a glance</p><p class="body-sm">Search and prioritize every loan.</p></div>
+          <div class="card"><p class="h4">Guided document review</p><p class="body-sm">Classify, verify and tie documents to conditions.</p></div>
+          <div class="card"><p class="h4">Borrower in one place</p><p class="body-sm">Credit, employment and notes, one click away.</p></div>
+        </div>
+        <figure><div class="frame"><img src="/portfolio/img/processor-workspace.jpg" alt="Grid of processor workspace screens: loan summary, pipeline, search, document review and conditions." width="1800" height="955" loading="lazy"></div><figcaption>Hundreds of screens. One application. One visual language.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">PHH Mortgage · LoanSpan</span>
+        <h3>We built one loan record with a workspace for each role</h3>
+        <p class="body">LoanSpan replaced PHH's legacy LOS: one trusted loan record, a workspace for each role. Underwriting became cumulative and traceable, with every condition tied to its documents, data and decision history.</p>
+      </div>
+      <div class="split rev">
+        <figure><div class="frame"><img src="/portfolio/img/loanspan-screen.jpg" alt="LoanSpan processor screen with loan summary, underwriting toll gate, tasks, document expirations, payments and loan information." width="1502" height="1848" loading="lazy"></div><figcaption>The processor view: toll gate, tasks and document expirations on one screen.</figcaption></figure>
+        <div class="stack-lg">
+          <figure><div class="frame"><img src="/portfolio/img/loanspan-roles.jpg" alt="LoanSpan app icons for Originator, Processor, Underwriter, Closer and Correspondent." width="1759" height="398" loading="lazy"></div><figcaption>Originator, Processor, Underwriter, Closer, Correspondent.</figcaption></figure>
+          <dl class="metrics" style="grid-template-columns: 1fr">
+            <div class="metric" style="padding-left:0;border-left:0"><dt>Cut from end-to-end loan cycle time</dt><dd class="v"><span class="acc">10</span> days</dd></div>
+            <div class="metric" style="padding-left:0;border-left:0"><dt>Duplicate checks in underwriting</dt><dd class="v">Fewer</dd></div>
+            <div class="metric" style="padding-left:0;border-left:0"><dt>First-pass condition resolution</dt><dd class="v">Higher</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Guild · Origination before and after</span>
+        <h3>We turned a wall of fields into a loan at a glance</h3>
+        <p class="body">The legacy LOS exposed fields. The redesign surfaced status, grouping, priority and action. The goal: less hunting for information, faster decisions.</p>
+      </div>
+      <div class="grid g3">
+        <figure><span class="eyebrow muted ba-label">Before · Legacy LOS</span><div class="frame"><img src="/portfolio/img/los-before.jpg" alt="Legacy loan analysis screen: dense unstructured fields with a row of buttons at the bottom." width="1120" height="1025" loading="lazy"></div></figure>
+        <figure><span class="eyebrow ba-label">After · Redesigned LOS</span><div class="frame"><img src="/portfolio/img/los-after.jpg" alt="Redesigned loan overview with a stage tracker and grouped panels for borrower, contacts, ratios and dates." width="818" height="1362" loading="lazy"></div></figure>
+        <figure><span class="eyebrow violet ba-label">Loan officers, live</span><div class="frame"><img src="/portfolio/img/lo-feedback.jpg" alt="Chat feedback from loan originators, including 'PHENOMENAL time saver!' and 'it's like a seasoned loan officer designed this!'" width="927" height="1370" loading="lazy"></div></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 3 -->
+  <section class="section shell" id="scale-it" aria-labelledby="c3-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">03 / Scale it · Guild Mortgage · PHH</span>
+      <h2 id="c3-title">I scale the work through systems and people.</h2>
+      <p class="lead">Executives and builders in the same room, a clear way of leading, and a design system every team builds from.</p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="stack">
+        <h3 class="h3">We put the people who owned the outcome in the same room</h3>
+        <ul class="tags" aria-label="Who was in the room">
+          <li class="tag acc">CEO</li><li class="tag acc">CFO</li><li class="tag acc">CIO</li><li class="tag acc">COO</li><li class="tag acc">Operations</li><li class="tag acc">Sales</li><li class="tag acc">Servicing</li><li class="tag">Developers</li><li class="tag">Designers</li><li class="tag">Researchers</li>
+        </ul>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/alignment-photos.jpg" alt="Photos of workshops and reviews where executives, loan officers, designers and engineers review the work together." width="1800" height="714" loading="lazy"></div><figcaption>Executives, loan officers and engineers reviewed the same work together. I chaired the executive IT Steering Committee with the CEO, President and C-level executives as voting members.</figcaption></figure>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Leadership model</span>
+        <h3>How I lead: frame it, hand it off, come back hard at the end</h3>
+      </div>
+      <div class="lead-bar" aria-hidden="true"><div class="edge">10%</div><div class="mid">80%</div><div class="edge">10%</div></div>
+      <div class="grid g3">
+        <div class="card"><span class="eyebrow">First 10% · Frame it</span><ul class="plain-list body-sm"><li>Observe the work.</li><li>Define the problem.</li><li>Establish principles.</li><li>Make the future tangible.</li><li>Prototype the first expression.</li><li>Set the quality bar.</li></ul></div>
+        <div class="card"><span class="eyebrow muted">Middle 80% · Empower it</span><ul class="plain-list body-sm"><li>Give strong people context.</li><li>Clarify outcomes and decision rights.</li><li>Coach rather than control.</li><li>Let specialists take the work further than I could alone.</li></ul></div>
+        <div class="card"><span class="eyebrow">Final 10% · Protect it</span><ul class="plain-list body-sm"><li>Integration and coherence.</li><li>Edge cases.</li><li>Language and interaction.</li><li>Polish.</li></ul></div>
+      </div>
+      <p class="callout">I don't design every screen. I set the bar at the start and check the work against it before it ships.</p>
+      <ol class="ladder" aria-label="Range of altitude"><li class="end">30,000 feet</li><li>Workflow</li><li>Screen</li><li>Microcopy</li><li class="end">Final pixel</li></ol>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Design system</span>
+        <h3>We built one design system, from tokens to full screens</h3>
+        <p class="body">Tokens → components → patterns → templates → features. Twelve product teams and 100+ developers built from the same parts, so screens looked and worked the same way.</p>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/design-system.jpg" alt="Design system overview: ions (design tokens), atoms (components), molecules (patterns) and organisms (modules and features), with example boards." width="1800" height="656" loading="lazy"></div><figcaption>Ions (tokens), atoms (components), molecules (patterns), organisms (modules and features).</figcaption></figure>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">PHH Mortgage · Digital platform</span>
+        <h3>We moved 100+ client sites to one template</h3>
+        <p class="body">1,000+ private-label sites had no reliable way to guarantee compliance. We rebuilt them on Adobe Experience Manager and consolidated 100+ into one reusable B2C template, combining central compliance governance with brand- and loan-officer-level customization.</p>
+      </div>
+      <div class="split">
+        <dl class="metrics" style="grid-template-columns: 1fr">
+          <div class="metric" style="padding-left:0;border-left:0"><dt>Page views on selected sites</dt><dd class="v">Up to <span class="acc">5×</span></dd></div>
+          <div class="metric" style="padding-left:0;border-left:0"><dt>Lead conversion on selected sites</dt><dd class="v">~2×</dd></div>
+          <div class="metric" style="padding-left:0;border-left:0"><dt>Compliance certainty across the client-site ecosystem</dt><dd class="v">One template</dd></div>
+        </dl>
+        <figure><div class="frame"><img src="/portfolio/img/client-sites.jpg" alt="Collage of inconsistent legacy client websites giving way to a consistent responsive template shown on three laptops." width="1800" height="1020" loading="lazy"></div><figcaption>From one-off client sites to one responsive, governed template.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 4 -->
+  <section class="section shell" id="whole-relationship" aria-labelledby="c4-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">04 / The whole relationship · Guild Mortgage</span>
+      <h2 id="c4-title">I design the whole relationship.</h2>
+      <p class="lead">What the customer reads, receives and hears from the loan team should match, from first referral to final payment.</p>
+    </div>
+
+    <div class="stack-lg">
+      <div class="sub-head">
+        <span class="eyebrow">Servicing</span>
+        <h3 class="h3">We tripled digital adoption across 200K+ serviced loans</h3>
+        <p class="body">One targeted message carried consistently through SMS, email, web and mobile, guided by J.D. Power feedback and customer research. Better customer experience also reduced dependence on print, mail, call center and manual servicing activity.</p>
+      </div>
+      <dl class="metrics m4">
+        <div class="metric"><dt>Digital statement adoption</dt><dd class="v">20% <span class="acc">→</span> ~60%</dd></div>
+        <div class="metric"><dt>Loans across the servicing portfolio</dt><dd class="v">200K+</dd></div>
+        <div class="metric"><dt>Servicing retention</dt><dd class="v">70%+</dd></div>
+        <div class="metric"><dt>Channels, one message</dt><dd class="v">4</dd><dd class="q">SMS · Email · Web · Mobile</dd></div>
+      </dl>
+      <figure><div class="frame"><img src="/portfolio/img/paperless-screens.jpg" alt="Guild web and mobile screens: welcome to My Account, go paperless, and enroll in text message updates." width="1800" height="770" loading="lazy"></div><figcaption>Welcome, go paperless, text updates: the same story on web and mobile.</figcaption></figure>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Moments that matter</span>
+        <h3>We wrote the message for the moment: paid, due or late</h3>
+        <p class="body">Payment status determined the message, action and help, not a generic portal page. The moment triggers the message: same words, same action on web, email and SMS.</p>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/payment-moments.jpg" alt="Three make-a-payment screens: thank you for your payment, next payment is past due, and next payment due." width="1800" height="263" loading="lazy"></div></figure>
+      <div class="grid g3">
+        <div class="moment mint"><span class="eyebrow muted">When · payment posts</span><p class="h4">Payment received</p><p class="body-sm">Confirm receipt. Remove uncertainty. Offer useful next actions.</p><q>"We've got it. Your [amount] payment posted on [date]."</q><span class="tag mint">Pay extra toward principal</span></div>
+        <div class="moment violet"><span class="eyebrow muted">When · due date passes</span><p class="h4">Past due</p><p class="body-sm">Acknowledge the issue. Surface help. Make the path forward obvious.</p><q>"Your payment is late. We're here to help, and you have options."</q><span class="tag violet">See my options</span></div>
+        <div class="moment acc"><span class="eyebrow muted">When · before the due date</span><p class="h4">Payment due</p><p class="body-sm">Clarify amount and timing. Present one clear action.</p><q>"Your [amount] payment is due [date]."</q><span class="tag acc">Make a payment</span></div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Borrower experience</span>
+        <h3>We organized the borrower's to-dos around closing day</h3>
+        <p class="body">Tasks, deadlines, consents, documents and changing validity windows were tied to closing day. Result: borrower engagement and response times went up.</p>
+      </div>
+      <div class="split rev">
+        <figure><div class="frame"><img src="/portfolio/img/borrower-calendar.jpg" alt="Borrower calendar with a month view and a timeline of document deadlines leading to the closing date." width="1800" height="1012" loading="lazy"></div><figcaption>Each task shows its deadline and how many days remain.</figcaption></figure>
+        <div class="stack-lg">
+          <figure><div class="frame"><img src="/portfolio/img/calendar-details.jpg" alt="Supporting screens: agreeing to the loan estimate, a loan amount change alert and a closing statement message." width="1241" height="881" loading="lazy"></div></figure>
+          <div class="stack">
+            <div><p class="h4">The right document, at the right time</p><p class="body-sm">Show what is needed and how long it remains valid.</p></div>
+            <div><p class="h4">Refresh before it expires</p><p class="body-sm">Request updated evidence as time changes the file.</p></div>
+            <div><p class="h4">One shared timeline</p><p class="body-sm">Customer, LOA and processor work from the same context.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Loan officers + agents</span>
+        <h3>Guild to Go gave agents letters on demand and loan officers their weekends back</h3>
+        <p class="body">Automated pre-approval letters and referrals strengthened the loan officer–agent connection while removing unnecessary weekend dependency.</p>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/guild-to-go.jpg" alt="Seven Guild to Go mobile screens: login, loan officer map, referral, client list, loan progress and pre-approval letters." width="1800" height="433" loading="lazy"></div></figure>
+      <div class="grid g3">
+        <div class="card"><p class="h4">Refer in a tap</p><p class="body-sm">Agents find and refer to a loan officer and track client progress.</p></div>
+        <div class="card"><p class="h4">Letters on demand</p><p class="body-sm">Agents generate updated pre-approval letters when the numbers change.</p></div>
+        <div class="card"><p class="h4">Weekends back</p><p class="body-sm">Loan officers no longer service routine letter requests every Saturday.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPROACH -->
+  <section class="section shell" id="approach" aria-labelledby="approach-title">
+    <div class="section-head">
+      <span class="eyebrow">How I think</span>
+      <h2 id="approach-title">LUCID: the framework I created and use on every engagement</h2>
+      <p class="body">Five lenses I bring to every problem, from the 30,000-foot view to the final pixel.</p>
+    </div>
+    <div class="grid g5 lucid">
+      <div class="card"><span class="letter" aria-hidden="true">L</span><p class="h4">Lean</p><p class="body-sm">Remove waste, expose constraints and improve end-to-end flow.</p></div>
+      <div class="card"><span class="letter" aria-hidden="true">U</span><p class="h4">User-centered</p><p class="body-sm">Understand human needs, mental models and behavior.</p></div>
+      <div class="card"><span class="letter" aria-hidden="true">C</span><p class="h4">Continuous discovery</p><p class="body-sm">Start with problems, test assumptions and keep learning.</p></div>
+      <div class="card"><span class="letter" aria-hidden="true">I</span><p class="h4">Innovation</p><p class="body-sm">Reframe conventional thinking and experiment with better possibilities.</p></div>
+      <div class="card"><span class="letter" aria-hidden="true">D</span><p class="h4">Design thinking</p><p class="body-sm">Connect desirability, feasibility and viability into coherent experiences.</p></div>
+    </div>
+  </section>
+
+  <!-- AI -->
+  <section class="section shell" id="ai" aria-labelledby="ai-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">What's next · AI-first</span>
+      <h2 id="ai-title">Where I see the opportunity for lenders.</h2>
+      <p class="lead">AI can take on the prep work so loan teams spend more time with borrowers. What I believe, what I've built, and where the opportunity is.</p>
+    </div>
+
+    <div class="grid g2">
+      <div class="card"><span class="eyebrow">Belief 1</span><p class="h4">Start with the customer's goal. Remember it.</p><p class="body-sm">The goal and life event are the center, not the application. AI carries permission-based context across every interaction, product and life stage.</p><p class="body-sm" style="color:var(--color-text)">"Here's what we already know. Tell us what changed."</p></div>
+      <div class="card"><span class="eyebrow">Belief 2</span><p class="h4">AI empowers the loan officer to present every viable option.</p><p class="body-sm">The 30-year fixed is no longer the only answer: 11%+ of rate locks are now non-QM, up from 1.4% in 2020; DSCR is a third of non-QM; 20% of homeowners hold rates under 3%. AI reads intent, evaluates eligibility and explains the trade-offs.</p><p class="body-sm" style="color:var(--color-text)">The AI advises the loan officer. The loan officer advises the customer.</p></div>
+      <div class="card"><span class="eyebrow">Belief 3</span><p class="h4">Meet the next generation where they already are.</p><p class="body-sm">Instagram, TikTok, social video and whatever comes next. Loan officers, agents and creators become educators. AI researches, scripts, produces and personalizes content at scale: an always-on sales engine that builds familiarity and trust before the first conversation.</p></div>
+      <div class="card"><span class="eyebrow">Belief 4</span><p class="h4">Instant underwriting becomes table stakes.</p><p class="body-sm">What once took processors, pre-underwriters and underwriters checking the same information again and again should happen as documents arrive. AI extracts, validates, verifies and flags exceptions in real time. People stay in the loop for escalations, judgment and final decisions, not for checking the checker.</p></div>
+    </div>
+    <p class="callout" style="margin-top: var(--space-8)">People do business with people they know, like and trust. Insight and education earn that trust. <span class="acc">AI-first, not AI bolted on.</span></p>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">What I've built with AI · Phoenix Burst</span>
+        <h3>We used GenAI to keep servicing requirements in step with regulation</h3>
+        <p class="body">Phoenix Burst is a GenAI-native compliance platform for mortgage servicing. As Head of Product Strategy, I shaped discovery and product vision, identified enterprise use cases with Wells Fargo and Cenlar, and designed its human-in-the-loop review and exception workflows.</p>
+      </div>
+      <ol class="steps">
+        <li><p class="h4">Ingest</p><p class="body-sm">New regulatory and investor guidance comes in.</p></li>
+        <li><p class="h4">Compare</p><p class="body-sm">The model compares it against existing requirements.</p></li>
+        <li class="human"><p class="h4">A person reviews</p><p class="body-sm">Differences are flagged for a human to check and approve.</p></li>
+        <li><p class="h4">Generate</p><p class="body-sm">Approved changes become requirements, user stories and test cases.</p></li>
+      </ol>
+      <div class="grid g2">
+        <div class="card"><span class="eyebrow">Where AI helped</span><p class="body-sm">Reading, comparing and drafting at a volume no team could keep up with by hand.</p></div>
+        <div class="card"><span class="eyebrow violet">Where people stayed in charge</span><p class="body-sm">Interpreting the rule, approving the change and owning the risk.</p></div>
+      </div>
+      <ul class="tags" aria-label="Recognition and adoption"><li class="tag mint">2025 MortgagePoint Tech Excellence Award</li><li class="tag">Launched Oct 2024</li><li class="tag">In production at Cenlar</li></ul>
+      <p class="body">I'm a product and transformation leader, not an ML researcher. My job is deciding where AI belongs in the workflow, and where it doesn't.</p>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">The Four Systems</span>
+        <h3>Where I see the opportunity for lenders, layer by layer</h3>
+      </div>
+      <div class="table-wrap" role="region" aria-labelledby="four-cap" tabindex="0">
+        <table>
+          <caption id="four-cap">The customer only sees the outer layer. It's only as good as what's underneath.</caption>
+          <thead><tr><th scope="col">Layer</th><th scope="col">What lenders can do</th><th scope="col">Where I've done it</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Engagement<small>Where the relationship lives</small></th><td>Meet borrowers where they are (web, mobile, text, social video and the loan officer) with one consistent story.</td><td><b>Paperless servicing:</b> 20% → ~60% across 200K+ loans</td></tr>
+            <tr><th scope="row">Intelligence<small>Understand, guide, anticipate</small></th><td>Read borrower intent and turn it into guidance: the right product, the real trade-offs, and context carried forward.</td><td><b>Borrower calendar and payment moments:</b> the right message for the borrower's actual state</td></tr>
+            <tr><th scope="row">Work<small>Orchestrate what happens next</small></th><td>Let AI do the prep work (gathering, comparing, drafting) while a person approves the decision.</td><td><b>Phoenix Burst:</b> GenAI compares new guidance, a person reviews</td></tr>
+            <tr><th scope="row">Record<small>Protect the trusted truth</small></th><td>Keep one trusted loan record underneath, so every channel, role and AI tool works from the same facts.</td><td><b>Role-based LOS:</b> one record, a view per role, cycle time down 10 days</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAREER -->
+  <section class="section shell" id="career" aria-labelledby="career-title">
+    <div class="section-head">
+      <span class="eyebrow">Career</span>
+      <h2 id="career-title">From designer to transformation executive, all in financial services</h2>
+      <p class="body">Each step added scope, because I kept learning and kept embracing what was new, from Lean Six Sigma to AI. The scope changed. The maker instinct never did.</p>
+    </div>
+    <div class="split">
+      <ol class="timeline" aria-label="Roles, most recent first">
+        <li><span class="when">Jun 2026 – Sep 2026</span><span class="role">SVP, Technology &amp; Product</span><span class="org">Kind Lending · Irvine, CA</span></li>
+        <li><span class="when">Feb 2024 – May 2026</span><span class="role">Head of Product Strategy</span><span class="org">Phoenix Burst · Arlington, VA</span></li>
+        <li><span class="when">2020 – 2024</span><span class="role">VP, Enterprise Product Management &amp; Digital Strategy</span><span class="org">Guild Mortgage · San Diego, CA</span></li>
+        <li><span class="when">2017 – 2020</span><span class="role">VP, Experience Design &amp; Digital Strategy</span><span class="org">Guild Mortgage · San Diego, CA</span></li>
+        <li><span class="when">2015 – 2017</span><span class="role">Director, Application Development — Design &amp; Requirements</span><span class="org">PHH Mortgage · Mount Laurel, NJ</span></li>
+        <li><span class="when">2011 – 2015</span><span class="role">Director, Operational Excellence &amp; Customer Experience</span><span class="org">PHH Mortgage · Mount Laurel, NJ</span></li>
+        <li><span class="when">2008 – 2011</span><span class="role">Manager, eBusiness &amp; Innovation</span><span class="org">PHH Mortgage · Mount Laurel, NJ</span></li>
+        <li><span class="when">1997 – 2008</span><span class="role">Founder, PixelSharks · Design Director, MarketSource / TapOnline</span><span class="org">Digital design and information architecture</span></li>
+      </ol>
+      <div class="stack-lg">
+        <div class="acc-list">
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="true" aria-controls="p-kind" id="b-kind"><span>Kind Lending<small>SVP, Technology &amp; Product</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-kind" role="region" aria-labelledby="b-kind"><ul><li>Led Product Management, Business Analysis, QA and UX across retail and wholesale platforms; assessed product strategy, delivery practices and organizational capabilities.</li><li>Presented a 6-, 12- and 24-month modernization roadmap to ownership; established an executive IT Steering Committee to strengthen governance and prioritization.</li></ul></div></div>
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="false" aria-controls="p-pb" id="b-pb"><span>Phoenix Burst<small>Head of Product Strategy</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-pb" role="region" aria-labelledby="b-pb" hidden><ul><li>Shaped discovery and product vision for a GenAI-native regulatory compliance platform; identified enterprise use cases with Wells Fargo and Cenlar and designed human-in-the-loop review and exception workflows.</li><li>Partnered with engineering to translate regulatory change into traceable requirements, user stories and test cases; contributed to launch and production adoption at Cenlar.</li><li>Applied AI-assisted discovery, structured prompts and rapid prototyping to accelerate use-case exploration, interaction design and validation of intelligent workflows.</li></ul></div></div>
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="false" aria-controls="p-guild" id="b-guild"><span>Guild Mortgage<small>VP roles, 2017 – 2024</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-guild" role="region" aria-labelledby="b-guild" hidden><ul><li>Established the Enterprise PMO, assumed SDLC ownership and led an Agile transformation, shifting from project outputs to continuously improved products measured by customer and business outcomes.</li><li>Recruited three functional directors and built management depth across Product, UX, Research, BA, Analytics, Lean and Agile, scaling 12 business-aligned teams within a 75-person organization.</li><li>Chaired the executive IT Steering Committee with the CEO, President and C-level executives as voting members; directed a $20M+ annual modernization portfolio and accelerated major releases from months to weeks.</li><li>Established Guild's formal UX, experience design and user research capabilities; led digital mortgage point-of-sale experiences and conceived Guild to Go.</li><li>Led Guild360 with Sales Operations and Marketing, integrating Salesforce CRM, lending systems and targeted outreach.</li><li>Grew paperless statement adoption from ~20% to nearly 60% across 200K+ serviced loans while servicing retention exceeded 70%.</li></ul></div></div>
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="false" aria-controls="p-phh" id="b-phh"><span>PHH Mortgage<small>Manager to Director, 2008 – 2017</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-phh" role="region" aria-labelledby="b-phh" hidden><ul><li>Led discovery, UX, requirements, UAT and validation within a $100M mortgage technology portfolio, aligning Technology, Operations and Compliance.</li><li>Directed a 64-day live-loan study, time-and-motion research and systems audits to identify underwriting rework, duplicate reviews and handoff delays.</li><li>Modernized LoanSpan into connected role-specific workflows; introduced cumulative, traceable underwriting review and helped cut loan cycle time by 10 days.</li><li>Established a $5M innovation lab applying Lean UX, Agile, rapid prototyping and functional first builds.</li><li>Consolidated thousands of sites onto Adobe Experience Manager; selected sites achieved up to 5× page views and ~2× lead conversion. Launched PHH's first mobile servicing app.</li></ul></div></div>
+        </div>
+        <div class="card"><span class="eyebrow muted">Education</span><p class="body-sm">BFA, Interaction Design — The College of New Jersey<br>Graphic Design Studies — NC State University<br>Lean Six Sigma Black Belt</p></div>
+        <div class="stack"><span class="eyebrow muted">Mortgage lifecycle I've worked across</span><ol class="ladder"><li>Acquisition</li><li>Origination</li><li>Processing</li><li>Underwriting</li><li>Closing</li><li>Servicing</li><li>Retention</li></ol></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING / CONTACT -->
+  <section class="section shell closing" id="contact" aria-labelledby="close-title">
+    <div class="reading">
+      <span class="eyebrow">The takeaway</span>
+      <h2 id="close-title">Mortgages will always be complex.<span>My job is to make them feel simple.</span></h2>
+      <p class="lead">From the 30,000-foot vision to the final pixel: the product, the email, the text and what the loan officer says, all from one company that knows exactly who the customer is.</p>
+      <p class="feelings">Known. Supported. Confident. Cared for. Well-served. Wow'd.</p>
+    </div>
+    <div class="contact">
+      <div class="card"><span class="eyebrow">Email</span><div class="val"><span id="email">jeremysromano@gmail.com</span><button class="btn copy" type="button" data-copy="email">Copy</button></div></div>
+      <div class="card"><span class="eyebrow">LinkedIn</span><div class="val"><a href="https://www.linkedin.com/in/jeremyromano" target="_blank" rel="noopener noreferrer">linkedin.com/in/jeremyromano<span class="vh"> (opens in a new tab)</span></a></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="shell footer__inner">
+    <span>Jeremy Romano · Experience, Product, Transformation</span>
+    <span>Results delivered with the teams I led and the business partners we worked alongside.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  // Theme toggle
+  var themeBtn = document.getElementById('theme-btn');
+  function currentTheme() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  function syncThemeBtn() { themeBtn.textContent = currentTheme() === 'dark' ? 'Light' : 'Dark'; }
+  themeBtn.addEventListener('click', function () {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('jr-theme', next); } catch (e) {}
+    syncThemeBtn();
+  });
+  try { var saved = localStorage.getItem('jr-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  syncThemeBtn();
+
+  // Mobile menu
+  var header = document.querySelector('.header');
+  var menuBtn = document.getElementById('menu-btn');
+  menuBtn.addEventListener('click', function () {
+    var open = header.classList.toggle('is-open');
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.textContent = open ? 'Close' : 'Menu';
+  });
+  document.querySelectorAll('.nav a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      header.classList.remove('is-open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.textContent = 'Menu';
+    });
+  });
+
+  // Current section in nav
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var map = { 'results': 'results', 'see-the-work': 'see-the-work', 'make-it-tangible': 'see-the-work', 'scale-it': 'see-the-work', 'whole-relationship': 'see-the-work', 'approach': 'approach', 'ai': 'ai', 'career': 'career', 'contact': 'contact' };
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var target = map[en.target.id];
+        links.forEach(function (l) { if (l.getAttribute('href') === '#' + target) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current'); });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
+  }
+
+  // Accordion
+  document.querySelectorAll('.acc-trigger').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      document.getElementById(btn.getAttribute('aria-controls')).hidden = open;
+    });
+  });
+
+  // Copy email
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.getAttribute('data-copy'));
+      var text = el.textContent;
+      function selectIt() { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected'; }
+      try {
+        navigator.clipboard.writeText(text).then(function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); }, selectIt);
+      } catch (e) { selectIt(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
