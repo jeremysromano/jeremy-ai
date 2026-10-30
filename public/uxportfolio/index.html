@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jeremy Romano UX Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Jeremy Romano — UX, product and AI leadership: research, design systems and human-in-the-loop AI workflows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Clean Sci-Fi Pro design system — dark first, light alternative.
+   Layout: 1200px shell, 720px reading column, visuals break out to 1040px; chapters separated by hairlines, not cards. */
+:root {
+  color-scheme: dark;
+  --color-page: #0B1120; --color-surface: #111A2E; --color-elevated: #1A2440;
+  --color-text: #F5F5F7; --color-text-secondary: #A7AEC2; --color-text-tertiary: #8E97AD; --color-disabled: #4A5675;
+  --color-border: #26314D; --color-border-strong: #4A5675;
+  --color-accent: #00F0FF; --color-on-accent: #0B1120;
+  --color-violet: #9437FF; --color-violet-text: #B383FF; --color-mint: #66D7B9;
+  --shadow-focus: 0 0 0 3px rgba(0, 240, 255, .28);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, .28);
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-size-display: 4rem; --font-size-h1: 3rem; --font-size-h2: 2.125rem; --font-size-h3: 1.625rem; --font-size-h4: 1.25rem;
+  --font-size-lead: 1.3125rem; --font-size-body: 1.0625rem; --font-size-body-sm: .9375rem; --font-size-caption: .8125rem;
+  --font-size-label: .75rem; --font-size-metric: 2.75rem; --font-size-button: .875rem;
+  --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-6: 1.5rem; --space-8: 2rem;
+  --space-10: 2.5rem; --space-12: 3rem; --space-16: 4rem; --space-20: 5rem; --space-24: 6rem;
+  --radius-xs: .25rem; --radius-sm: .5rem; --radius-md: .75rem; --radius-lg: 1rem; --radius-pill: 9999px;
+  --layout-shell: 75rem; --layout-article: 45rem; --layout-media: 65rem; --layout-gutter: 2rem;
+  --motion-fast: 150ms; --motion-standard: 200ms;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --color-page: #F5F5F7; --color-surface: #FFFFFF; --color-elevated: #FFFFFF;
+    --color-text: #1D1D1F; --color-text-secondary: #4A4A52; --color-text-tertiary: #585862; --color-disabled: #8E8E93;
+    --color-border: #D2D2D7; --color-border-strong: #8E8E93;
+    --color-accent: #006F7A; --color-on-accent: #FFFFFF;
+    --color-violet: #6D28D9; --color-violet-text: #6D28D9; --color-mint: #006B55;
+    --shadow-focus: 0 0 0 3px rgba(0, 111, 122, .25);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-page: #F5F5F7; --color-surface: #FFFFFF; --color-elevated: #FFFFFF;
+  --color-text: #1D1D1F; --color-text-secondary: #4A4A52; --color-text-tertiary: #585862; --color-disabled: #8E8E93;
+  --color-border: #D2D2D7; --color-border-strong: #8E8E93;
+  --color-accent: #006F7A; --color-on-accent: #FFFFFF;
+  --color-violet: #6D28D9; --color-violet-text: #6D28D9; --color-mint: #006B55;
+  --shadow-focus: 0 0 0 3px rgba(0, 111, 122, .25);
+}
+@media (max-width: 1023px) { :root { --layout-gutter: 1.25rem; } }
+@media (max-width: 767px) {
+  :root { --font-size-display: 2.5rem; --font-size-h1: 2.125rem; --font-size-h2: 1.75rem; --font-size-h3: 1.375rem;
+    --font-size-lead: 1.125rem; --font-size-body: 1rem; --font-size-metric: 2.25rem; --layout-gutter: 1rem; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body {
+  margin: 0; background: var(--color-page); color: var(--color-text);
+  font: 400 var(--font-size-body)/1.7 var(--font-sans); letter-spacing: -.01em;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--color-page); }
+h1, h2, h3, h4 { text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--color-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; box-shadow: var(--shadow-focus); }
+img { display: block; max-width: 100%; height: auto; }
+.vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Shell */
+.shell {
+  width: 100%; max-width: calc(var(--layout-shell) + 2 * max(var(--layout-gutter), 16px)); margin-inline: auto;
+  padding-left: max(var(--layout-gutter), 16px, env(safe-area-inset-left, 0px));
+  padding-right: max(var(--layout-gutter), 16px, env(safe-area-inset-right, 0px));
+}
+.reading { max-width: var(--layout-article); }
+.media-w { max-width: var(--layout-media); }
+
+/* Type helpers */
+.eyebrow { display: inline-block; font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--color-accent); }
+.eyebrow.muted { color: var(--color-text-tertiary); }
+.eyebrow.violet { color: var(--color-violet-text); }
+.lead { font-size: var(--font-size-lead); line-height: 1.55; color: var(--color-text-secondary); max-width: 60ch; }
+.body { color: var(--color-text-secondary); max-width: 68ch; }
+.body-sm { font-size: var(--font-size-body-sm); line-height: 1.6; letter-spacing: 0; color: var(--color-text-secondary); }
+.caption { font-size: var(--font-size-caption); line-height: 1.5; letter-spacing: 0; color: var(--color-text-tertiary); }
+.h3 { font-size: var(--font-size-h3); line-height: 1.25; letter-spacing: -.02em; font-weight: 600; margin: 0; }
+.h4 { font-size: var(--font-size-h4); line-height: 1.35; letter-spacing: -.01em; font-weight: 600; margin: 0; color: var(--color-text); }
+.stack { display: grid; gap: var(--space-4); }
+.stack-lg { display: grid; gap: var(--space-8); }
+
+/* Header */
+.header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--color-page); border-bottom: 1px solid var(--color-border); }
+.header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 64px; flex-wrap: wrap; }
+.wordmark { font: 700 15px/1.2 var(--font-sans); letter-spacing: -.03em; color: var(--color-text); text-decoration: none; padding-block: var(--space-3); }
+.nav { display: flex; align-items: center; gap: var(--space-4); }
+.nav ul { display: flex; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: var(--space-2); font-size: 14px; color: var(--color-text-secondary); text-decoration: none; border-bottom: 2px solid transparent; transition: color var(--motion-fast) ease-out, border-color var(--motion-fast) ease-out; }
+.nav a:hover { color: var(--color-text); }
+.nav a[aria-current="true"] { color: var(--color-text); border-bottom-color: var(--color-accent); }
+.btn.menu-btn { display: none; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 44px; padding: 10px 18px; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: transparent; color: var(--color-text); font: 600 var(--font-size-button)/1.2 var(--font-sans); letter-spacing: .01em; text-decoration: none; cursor: pointer; transition: border-color var(--motion-fast) ease-out, opacity var(--motion-fast) ease-out, background-color var(--motion-fast) ease-out; }
+.btn:hover { border-color: var(--color-accent); text-decoration: none; }
+.btn:active { background: var(--color-elevated); }
+.btn--primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
+.btn--primary:hover { opacity: .9; }
+@media (max-width: 899px) {
+  .btn.menu-btn { display: inline-flex; }
+  .nav { display: none; width: 100%; flex-direction: column; align-items: stretch; padding-bottom: var(--space-4); }
+  .header.is-open .nav { display: flex; }
+  .nav ul { flex-direction: column; }
+  .nav a { width: 100%; border-bottom: 1px solid var(--color-border); }
+  .nav a[aria-current="true"] { border-bottom-color: var(--color-border); box-shadow: inset 2px 0 0 var(--color-accent); padding-left: var(--space-3); }
+}
+
+/* Hero */
+.hero { padding-block: var(--space-24) var(--space-16); }
+.hero h1 { margin: var(--space-4) 0 var(--space-6); font-size: var(--font-size-display); line-height: 1.08; letter-spacing: -.045em; font-weight: 600; }
+.hero h1 span { display: block; }
+.hero h1 .dim { color: var(--color-text-tertiary); }
+.hero .tagline { margin-top: var(--space-4); color: var(--color-text); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-8); }
+.facts { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin: var(--space-12) 0 0; padding: var(--space-4) 0 0; list-style: none; border-top: 1px solid var(--color-border); }
+.facts li { font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); }
+@media (max-width: 767px) { .hero { padding-block: var(--space-16) var(--space-12); } }
+
+/* Sections */
+.section { padding-block: var(--space-20); border-top: 1px solid var(--color-border); }
+.section-head { max-width: var(--layout-article); margin-bottom: var(--space-10); display: grid; gap: var(--space-3); }
+.section-head h2 { margin: 0; font-size: var(--font-size-h2); line-height: 1.18; letter-spacing: -.025em; font-weight: 600; }
+.chapter-head h2 { font-size: var(--font-size-h1); line-height: 1.12; letter-spacing: -.035em; font-weight: 650; }
+.sub { margin-top: var(--space-16); display: grid; gap: var(--space-6); }
+.sub-head { max-width: var(--layout-article); display: grid; gap: var(--space-2); }
+.sub-head h3 { font-size: var(--font-size-h3); line-height: 1.25; letter-spacing: -.02em; font-weight: 600; margin: 0; }
+@media (max-width: 767px) { .section { padding-block: var(--space-12); } .sub { margin-top: var(--space-12); } }
+
+/* Grids */
+.grid { display: grid; gap: var(--space-6); }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.g5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1023px) { .g4, .g5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .g2, .g3, .g4, .g5 { grid-template-columns: 1fr; } }
+
+/* Card */
+.card { min-width: 0; padding: var(--space-6); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); display: grid; gap: var(--space-2); align-content: start; }
+.card .eyebrow { margin-bottom: var(--space-1); }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border-top: 1px solid var(--color-border); }
+.metric { display: flex; flex-direction: column; padding: var(--space-8) var(--space-8) var(--space-8) 0; border-bottom: 1px solid var(--color-border); min-width: 0; }
+.metric:not(:nth-child(3n+1)) { padding-left: var(--space-8); border-left: 1px solid var(--color-border); }
+.metric dd.v { order: 1; margin: 0 0 var(--space-2); font-size: var(--font-size-metric); line-height: 1.1; letter-spacing: -.035em; font-weight: 600; color: var(--color-text); font-variant-numeric: tabular-nums; }
+.metric dd.v .acc { color: var(--color-accent); }
+.metric dt { order: 2; font-size: var(--font-size-body-sm); line-height: 1.5; letter-spacing: 0; color: var(--color-text-secondary); }
+.metric dd.q { order: 3; margin: var(--space-1) 0 0; font-size: var(--font-size-caption); line-height: 1.5; color: var(--color-text-tertiary); }
+.metrics.m4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.metrics.m4 .metric:not(:nth-child(3n+1)) { padding-left: 0; border-left: 0; }
+.metrics.m4 .metric:not(:nth-child(4n+1)) { padding-left: var(--space-8); border-left: 1px solid var(--color-border); }
+@media (max-width: 899px) {
+  .metrics, .metrics.m4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metrics .metric:not(:nth-child(3n+1)), .metrics.m4 .metric:not(:nth-child(4n+1)) { padding-left: 0; border-left: 0; }
+  .metrics .metric:nth-child(2n), .metrics.m4 .metric:nth-child(2n) { padding-left: var(--space-6); border-left: 1px solid var(--color-border); }
+}
+@media (max-width: 479px) {
+  .metrics, .metrics.m4 { grid-template-columns: 1fr; }
+  .metrics .metric:nth-child(2n), .metrics.m4 .metric:nth-child(2n) { padding-left: 0; border-left: 0; }
+  .metric { padding-block: var(--space-6); }
+}
+
+/* Proof list (four things I do) */
+.proof { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-border); }
+.proof li { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 260px); gap: var(--space-6); padding-block: var(--space-6); border-bottom: 1px solid var(--color-border); align-items: start; }
+.proof .num { font: 500 var(--font-size-label)/2.2 var(--font-mono); letter-spacing: .1em; color: var(--color-accent); }
+.proof h3 { margin: 0 0 var(--space-1); font-size: var(--font-size-h4); line-height: 1.35; letter-spacing: -.01em; font-weight: 600; }
+.proof h3 a { color: var(--color-text); text-decoration: none; }
+.proof h3 a:hover { color: var(--color-accent); }
+.proof .res b { display: block; font-size: var(--font-size-h3); line-height: 1.2; letter-spacing: -.02em; font-weight: 600; color: var(--color-text); }
+@media (max-width: 767px) { .proof li { grid-template-columns: 40px minmax(0, 1fr); } .proof .res { grid-column: 2; } }
+
+/* LUCID */
+.lucid .letter { font: 600 3.5rem/1 var(--font-sans); letter-spacing: -.04em; color: var(--color-accent); margin-bottom: var(--space-3); }
+
+/* Figures */
+figure { margin: 0; min-width: 0; }
+.frame { position: relative; display: block; width: 100%; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: 0; }
+.frame img { width: 100%; height: auto; }
+figcaption { margin-top: var(--space-3); max-width: 68ch; font-size: var(--font-size-caption); line-height: 1.5; letter-spacing: 0; color: var(--color-text-tertiary); }
+figcaption b { color: var(--color-text-secondary); font-weight: 600; }
+.ba-label { display: block; margin-bottom: var(--space-2); }
+
+/* Split layouts */
+.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-10); align-items: start; }
+.split.rev { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+@media (max-width: 899px) { .split, .split.rev { grid-template-columns: 1fr; gap: var(--space-8); } }
+
+/* Findings / rules lists */
+.findings { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); border-top: 1px solid var(--color-border); padding-top: var(--space-4); }
+.findings li { font-size: var(--font-size-body-sm); line-height: 1.5; letter-spacing: 0; color: var(--color-text); font-weight: 500; }
+@media (max-width: 899px) { .findings { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 479px) { .findings { grid-template-columns: 1fr; } }
+.callout { font-size: var(--font-size-h4); line-height: 1.4; letter-spacing: -.01em; font-weight: 600; color: var(--color-text); max-width: 52ch; }
+.callout .acc { color: var(--color-accent); }
+
+/* Fidelity steps */
+.fidelity { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; align-items: center; }
+.fidelity li { display: flex; align-items: center; gap: var(--space-2); font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-secondary); }
+.fidelity li span { padding: 4px var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-xs); background: var(--color-elevated); }
+.fidelity li:not(:last-child)::after { content: "→"; color: var(--color-text-tertiary); font-family: var(--font-sans); }
+
+/* Tags */
+.tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.tag { display: inline-flex; align-items: center; min-height: 24px; padding: 2px var(--space-2); border: 1px solid var(--color-border); border-radius: var(--radius-xs); background: var(--color-elevated); font: 500 var(--font-size-label)/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--color-text-secondary); white-space: nowrap; }
+.tag.acc { color: var(--color-accent); }
+.tag.violet { color: var(--color-violet-text); }
+.tag.mint { color: var(--color-mint); }
+
+/* Leadership bar 10/80/10 */
+.lead-bar { display: grid; grid-template-columns: 1fr 8fr 1fr; gap: var(--space-2); }
+.lead-bar div { padding: var(--space-2) var(--space-3); border-radius: var(--radius-xs); font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-align: center; }
+.lead-bar .edge { background: var(--color-accent); color: var(--color-on-accent); }
+.lead-bar .mid { background: var(--color-elevated); border: 1px solid var(--color-border); color: var(--color-text-secondary); }
+@media (max-width: 479px) { .lead-bar { grid-template-columns: 1fr 3fr 1fr; } }
+.ladder { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; align-items: center; }
+.ladder li { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-body-sm); color: var(--color-text-secondary); }
+.ladder li:not(:last-child)::after { content: "→"; color: var(--color-text-tertiary); }
+.ladder li.end { color: var(--color-accent); font-weight: 600; }
+.plain-list { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-1); }
+.plain-list li::marker { color: var(--color-text-tertiary); }
+
+/* Moments (paid / due / late) */
+.moment { display: grid; gap: var(--space-2); padding-top: var(--space-4); border-top: 2px solid var(--color-border-strong); }
+.moment.mint { border-top-color: var(--color-mint); }
+.moment.violet { border-top-color: var(--color-violet-text); }
+.moment.acc { border-top-color: var(--color-accent); }
+.moment q { display: block; quotes: none; font-size: var(--font-size-body-sm); line-height: 1.5; color: var(--color-text); font-weight: 500; }
+
+/* Steps (Phoenix Burst) */
+.steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); counter-reset: s; }
+.steps li { counter-increment: s; display: grid; gap: var(--space-1); padding-top: var(--space-4); border-top: 1px solid var(--color-border-strong); }
+.steps li::before { content: "0" counter(s); font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .1em; color: var(--color-accent); }
+.steps li.human { border-top: 2px solid var(--color-accent); }
+@media (max-width: 899px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 479px) { .steps { grid-template-columns: 1fr; } }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: var(--font-size-body-sm); line-height: 1.5; letter-spacing: 0; }
+caption { caption-side: top; padding-bottom: var(--space-3); text-align: left; font-size: var(--font-size-caption); color: var(--color-text-tertiary); }
+th, td { padding: var(--space-4) var(--space-6) var(--space-4) 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--color-border); }
+thead th { font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); border-bottom-color: var(--color-border-strong); }
+tbody th { font-weight: 600; color: var(--color-text); }
+tbody th small { display: block; font-weight: 400; color: var(--color-text-tertiary); font-size: var(--font-size-caption); }
+td { color: var(--color-text-secondary); }
+td b { color: var(--color-text); font-weight: 600; }
+
+/* Timeline (career) */
+.timeline { margin: 0; padding: 0 0 0 var(--space-6); list-style: none; border-left: 2px solid var(--color-violet-text); display: grid; gap: var(--space-8); }
+.timeline li { display: grid; gap: var(--space-1); padding-left: var(--space-2); }
+.timeline .when { font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--color-violet-text); }
+.timeline .role { font-weight: 600; color: var(--color-text); }
+.timeline .org { color: var(--color-text-tertiary); font-size: var(--font-size-body-sm); }
+
+/* Accordion */
+.acc-list { border-top: 1px solid var(--color-border); }
+.acc-item { border-bottom: 1px solid var(--color-border); }
+.acc-item h3 { margin: 0; }
+.acc-trigger { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: 56px; padding: var(--space-3) 0; border: 0; background: transparent; color: var(--color-text); font: 600 var(--font-size-body)/1.4 var(--font-sans); letter-spacing: -.01em; text-align: left; cursor: pointer; }
+.acc-trigger:hover { color: var(--color-accent); }
+.acc-trigger small { display: block; font: 500 var(--font-size-label)/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-top: 2px; }
+.acc-icon { position: relative; flex: none; width: 12px; height: 12px; }
+.acc-icon::before, .acc-icon::after { content: ""; position: absolute; left: 0; top: 5px; width: 12px; height: 2px; background: currentColor; transition: transform var(--motion-standard) ease-out; }
+.acc-icon::after { transform: rotate(90deg); }
+.acc-trigger[aria-expanded="true"] .acc-icon::after { transform: rotate(0deg); }
+.acc-panel { padding: 0 0 var(--space-6); max-width: 68ch; }
+.acc-panel ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-2); font-size: var(--font-size-body-sm); line-height: 1.6; letter-spacing: 0; color: var(--color-text-secondary); }
+
+/* Closing */
+.closing h2 { margin: var(--space-4) 0 var(--space-6); font-size: var(--font-size-h1); line-height: 1.12; letter-spacing: -.035em; font-weight: 650; }
+.closing h2 span { display: block; color: var(--color-accent); }
+.feelings { margin-top: var(--space-6); font-weight: 600; color: var(--color-text); }
+.contact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); margin-top: var(--space-12); }
+@media (max-width: 767px) { .contact { grid-template-columns: 1fr; } }
+.contact .val { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; font-size: var(--font-size-body); color: var(--color-text); user-select: all; word-break: break-word; }
+.copy { min-height: 32px; padding: 4px var(--space-3); font-size: 12px; user-select: none; }
+
+/* Footer */
+.footer { padding-block: var(--space-12); border-top: 1px solid var(--color-border); }
+.footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); font-size: var(--font-size-caption); line-height: 1.5; color: var(--color-text-tertiary); }
+
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="header" id="top">
+  <div class="shell header__inner">
+    <a class="wordmark" href="#intro">JEREMY ROMANO</a>
+    <button class="btn menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" id="menu-btn">Menu</button>
+    <nav class="nav" id="site-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#how-i-work">How I work</a></li>
+        <li><a href="#ai">AI</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#career">Career</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="btn" type="button" id="theme-btn" aria-label="Switch color theme">Light</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="shell hero" id="intro" aria-labelledby="hero-title">
+    <div class="reading">
+      <span class="eyebrow">UX · Product · AI</span>
+      <h1 id="hero-title"><span>Complex work will always be complex.</span><span class="dim">My job is to make it feel simple.</span></h1>
+      <p class="lead">I lead design and product teams that turn complicated, high-stakes workflows into experiences people understand and trust. More and more, that means AI does the heavy lifting while people keep the judgment.</p>
+      <p class="tagline">Designer at heart. Product and transformation executive by trade.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="#ai">See the AI work</a>
+        <a class="btn" href="#how-i-work">How I work</a>
+      </div>
+    </div>
+    <ul class="facts" aria-label="At a glance">
+      <li>20+ years</li><li>UX · Research · Product</li><li>Human-in-the-loop AI</li><li>Fintech · Regulated industries</li><li>Temecula, CA · Remote</li>
+    </ul>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="section shell" id="results" aria-labelledby="results-title">
+    <div class="section-head">
+      <span class="eyebrow">Results up front</span>
+      <h2 id="results-title">Outcomes delivered with the teams I led</h2>
+      <p class="body">Most of my work has been in financial services, where the stakes are high, the rules keep changing and the systems are old. That's a good place to learn UX: when a workflow is confusing, people lose time, money and trust. Here is what better design changed.</p>
+    </div>
+    <dl class="metrics">
+      <div class="metric"><dt>Digital adoption after one message was carried across SMS, email, web and mobile</dt><dd class="v">20% <span class="acc">→</span> ~60%</dd><dd class="q">200K+ customer accounts</dd></div>
+      <div class="metric"><dt>Cut from end-to-end cycle time by redesigning around the tasks people actually do</dt><dd class="v"><span class="acc">10</span> days</dd></div>
+      <div class="metric"><dt>Page views on selected sites after moving 100+ sites to one governed template</dt><dd class="v">Up to 5×</dd><dd class="q">~2× lead conversion</dd></div>
+      <div class="metric"><dt>Person product and UX organization built and led through three directors</dt><dd class="v">75+</dd><dd class="q">Product · UX &amp; Research · BI</dd></div>
+      <div class="metric"><dt>Product teams and 100+ developers building from one design system</dt><dd class="v">12</dd></div>
+      <div class="metric"><dt>Hours for a year of regulatory change with Phoenix Burst's GenAI workflow, including human review, as reported by PhoenixTeam</dt><dd class="v">972 <span class="acc">→</span> ~133</dd></div>
+    </dl>
+    <p class="caption" style="margin-top: var(--space-6)">Also: contributed to Guild's J.D. Power No. 1 origination satisfaction (2021) and No. 2 servicing rankings (2021, 2023). Phoenix Burst received MortgagePoint Tech Excellence Awards in 2025 and 2026.</p>
+  </section>
+
+  <!-- HOW I WORK -->
+  <section class="section shell" id="how-i-work" aria-labelledby="how-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">How I work</span>
+      <h2 id="how-title">Four habits, the same on every project.</h2>
+      <p class="lead">Whether the user is a customer on their phone or an analyst reviewing a regulation, the process is the same: watch the work, make it real early, scale it through systems, and keep the whole experience consistent.</p>
+    </div>
+    <ol class="proof">
+      <li><span class="num" aria-hidden="true">01</span><div><h3><a href="#work-research">Go see the work before we design anything.</a></h3><p class="body-sm">Interviews, shadowing, time-and-motion and click-path studies, system audits. Find where the work actually gets stuck before choosing a solution.</p></div><p class="res body-sm"><b>64 days</b>following one live case, touch by touch</p></li>
+      <li><span class="num" aria-hidden="true">02</span><div><h3><a href="#work-prototype">Make the future tangible before we build it.</a></h3><p class="body-sm">Napkin, sketch, wireframe, high fidelity, and now working code. People react to something real, early and cheaply.</p></div><p class="res body-sm"><b>"PHENOMENAL</b>time saver," from users, live</p></li>
+      <li><span class="num" aria-hidden="true">03</span><div><h3><a href="#work-systems">Scale the work through systems and people.</a></h3><p class="body-sm">Design systems from tokens to templates, and executives deciding in the same room as researchers, designers and engineers.</p></div><p class="res body-sm"><b>12 teams</b>one design language</p></li>
+      <li><span class="num" aria-hidden="true">04</span><div><h3><a href="#work-channels">Design the whole relationship, across every channel.</a></h3><p class="body-sm">What people read, receive and hear should match, whether it's an app, an email, a text or a person.</p></div><p class="res body-sm"><b>3×</b>digital adoption</p></li>
+    </ol>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">How I think</span>
+        <h3>LUCID: the framework I created and use on every engagement</h3>
+        <p class="body">Five lenses I bring to every problem, from the 30,000-foot view to the final pixel.</p>
+      </div>
+      <div class="grid g5 lucid">
+        <div class="card"><span class="letter" aria-hidden="true">L</span><p class="h4">Lean</p><p class="body-sm">Remove waste, expose constraints and improve end-to-end flow.</p></div>
+        <div class="card"><span class="letter" aria-hidden="true">U</span><p class="h4">User-centered</p><p class="body-sm">Understand human needs, mental models and behavior.</p></div>
+        <div class="card"><span class="letter" aria-hidden="true">C</span><p class="h4">Continuous discovery</p><p class="body-sm">Start with problems, test assumptions and keep learning.</p></div>
+        <div class="card"><span class="letter" aria-hidden="true">I</span><p class="h4">Innovation</p><p class="body-sm">Reframe conventional thinking and experiment with better possibilities.</p></div>
+        <div class="card"><span class="letter" aria-hidden="true">D</span><p class="h4">Design thinking</p><p class="body-sm">Connect desirability, feasibility and viability into coherent experiences.</p></div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">How I lead</span>
+        <h3>Frame it, hand it off, come back hard at the end</h3>
+      </div>
+      <div class="lead-bar" aria-hidden="true"><div class="edge">10%</div><div class="mid">80%</div><div class="edge">10%</div></div>
+      <div class="grid g3">
+        <div class="card"><span class="eyebrow">First 10% · Frame it</span><ul class="plain-list body-sm"><li>Observe the work.</li><li>Define the problem.</li><li>Establish principles.</li><li>Make the future tangible.</li><li>Set the quality bar.</li></ul></div>
+        <div class="card"><span class="eyebrow muted">Middle 80% · Empower it</span><ul class="plain-list body-sm"><li>Give strong people context.</li><li>Clarify outcomes and decision rights.</li><li>Coach rather than control.</li><li>Let specialists take the work further than I could alone.</li></ul></div>
+        <div class="card"><span class="eyebrow">Final 10% · Protect it</span><ul class="plain-list body-sm"><li>Integration and coherence.</li><li>Edge cases.</li><li>Language and interaction.</li><li>Polish.</li></ul></div>
+      </div>
+      <p class="callout">I don't design every screen. I set the bar at the start and check the work against it before it ships.</p>
+      <ol class="ladder" aria-label="Range of altitude"><li class="end">30,000 feet</li><li>Workflow</li><li>Screen</li><li>Microcopy</li><li class="end">Final pixel</li></ol>
+    </div>
+  </section>
+
+  <!-- AI -->
+  <section class="section shell" id="ai" aria-labelledby="ai-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">AI · What I believe</span>
+      <h2 id="ai-title">Automate the work. Keep the judgment.</h2>
+      <p class="lead">The hard part of AI products isn't the model. It's deciding which steps a machine should take, where a person must decide, and how to make that review fast and trustworthy. That's a design problem.</p>
+    </div>
+
+    <div class="grid g2">
+      <div class="card"><span class="eyebrow">Belief 1</span><p class="h4">Design the human gate, not just the model.</p><p class="body-sm">Every AI workflow needs clear points where a person approves, edits or rejects, with the source, the change and the history in view. If review is slow, people skip it. If it's fast, they trust it.</p></div>
+      <div class="card"><span class="eyebrow">Belief 2</span><p class="h4">AI advises the expert. The expert advises the customer.</p><p class="body-sm">AI reads intent, checks eligibility and lays out trade-offs. The professional brings judgment and the relationship. The best experiences make the expert better, not invisible.</p></div>
+      <div class="card"><span class="eyebrow">Belief 3</span><p class="h4">Start with the person's goal, and remember it.</p><p class="body-sm">The goal is the center, not the form. With permission, AI carries context across every interaction, so people stop repeating themselves.</p><p class="body-sm" style="color:var(--color-text)">"Here's what we already know. Tell us what changed."</p></div>
+      <div class="card"><span class="eyebrow">Belief 4</span><p class="h4">Trust is a UX problem.</p><p class="body-sm">Show where an answer came from. Show what changed. Make it easy to undo. People stay in the loop for escalations, judgment and final decisions, not for checking the checker.</p></div>
+    </div>
+    <p class="callout" style="margin-top: var(--space-8)">AI-first, not AI bolted on. <span class="acc">I'm a product and design leader, not an ML researcher. My job is deciding where AI belongs in the workflow, and where it doesn't.</span></p>
+  </section>
+
+  <!-- PHOENIX BURST CASE STUDY -->
+  <section class="section shell" id="phoenix-burst" aria-labelledby="pb-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">Case study · Phoenix Burst · PhoenixTeam</span>
+      <h2 id="pb-title">A GenAI product that reads regulation so people don't have to.</h2>
+      <p class="lead">Phoenix Burst watches regulatory sources, works out what each change means and who it affects, and drafts the work. People review and approve at every step that matters.</p>
+    </div>
+
+    <div class="split">
+      <div class="stack">
+        <div class="card"><span class="eyebrow">The problem</span><p class="body-sm">Regulated companies get a constant flow of new rules, bulletins and guide updates. Analysts read each one, compare it with the old version, decide what it affects and write requirements by hand. One year of change took nearly a thousand hours just for the impact analysis.</p></div>
+        <div class="card"><span class="eyebrow violet">My role · Head of Product Strategy, 2024–2026</span><p class="body-sm">I shaped discovery and product vision, found enterprise use cases with Wells Fargo and Cenlar, and designed the human-in-the-loop review and exception workflows. I used AI-assisted discovery, structured prompts and rapid prototyping in code to explore and test the interaction design.</p></div>
+      </div>
+      <figure><div class="frame"><img src="/uxportfolio/img/pb-chat.jpg" alt="Phoenix Burst chat: the assistant reads an uploaded California bill, summarizes it and lists each affected code section, then offers next actions such as a legal summary." width="2000" height="1250" loading="lazy"></div><figcaption><b>Drop in a document, get the impact.</b> The assistant reads a new bill, explains it in plain language and lists exactly which sections change.</figcaption></figure>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <h3>The workflow: machines do the reading, people make the calls</h3>
+        <p class="body">Each step is either automated or a named human gate. The design work was making each gate fast: the source text, the change and the AI's draft side by side, with one-click approve, edit and history.</p>
+      </div>
+      <ol class="steps">
+        <li><p class="h4">Detect</p><p class="body-sm">A crawler finds the new rule. No one has to kick it off.</p></li>
+        <li class="human"><p class="h4">Approve the impact</p><p class="body-sm">AI drafts the summary and impact. A person approves it.</p></li>
+        <li class="human"><p class="h4">Approve the change</p><p class="body-sm">Each changed statement and citation is reviewed against the source.</p></li>
+        <li><p class="h4">Generate and track</p><p class="body-sm">Approved changes become requirements, stories and tests, then go through implementation and monitoring.</p></li>
+      </ol>
+    </div>
+
+    <figure class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Design · The human gate</span>
+        <h3>Source on the left, AI's reading on the right</h3>
+        <p class="body">The curator shows the original rule next to each change statement the AI wrote, with an impact rating, the exact text that changed, and controls to approve, edit or see history. Progress is always visible, and the next step is one click away.</p>
+      </div>
+      <div class="frame"><img src="/uxportfolio/img/pb-curator.jpg" alt="Change Statement Curator: source regulation text on the left; on the right, AI-written change statements with high-impact labels, the changed text, thumbs up and down, History and Edit buttons, and a Next Step: Generate Requirements button." width="2000" height="1250" loading="lazy"></div>
+      <figcaption>Design prototype I built in code to explore the review experience. Sample data; names anonymized.</figcaption>
+    </figure>
+
+    <div class="sub">
+      <div class="grid g2">
+        <figure><div class="frame"><img src="/uxportfolio/img/pb-artifact-curator.jpg" alt="Artifact Curator showing generated system requirements filtered by department, topic and sub-topic, each with an ID, approve and edit controls, and an Export button." width="2000" height="1250" loading="lazy"></div><figcaption><b>From rule to requirement.</b> Approved changes become traceable requirements, filtered by team and topic, ready to export.</figcaption></figure>
+        <figure><div class="frame"><img src="/uxportfolio/img/pb-glass.jpg" alt="Phoenix Burst Glass design system: 'Clarity through glass.' with teal, purple, amber and sage color scales and agency-specific glass tints." width="2000" height="1250" loading="lazy"></div><figcaption><b>A design system for an AI product.</b> Buttons and labels never look alike, so people always know what they can act on.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="split rev">
+        <figure style="max-width: 360px; justify-self: center"><img src="/uxportfolio/img/pb-pivot-chart.png" alt="PhoenixTeam's robot mascot Pivot standing on a bar chart, pointing at the much shorter Burst processing bar compared with manual hours." width="480" height="708" loading="lazy" style="width:100%;height:auto"><figcaption>Image: PhoenixTeam.</figcaption></figure>
+        <div class="stack-lg">
+          <div class="sub-head">
+            <span class="eyebrow">The outcome</span>
+            <h3>A year of regulatory change, in hours instead of months</h3>
+            <p class="body">PhoenixTeam reports that impact analysis for one year of change took at least 972 hours by hand. Burst processes the same work, from impact through implementation, in about 37 hours, or about 133 hours including human review.</p>
+          </div>
+          <dl class="metrics" style="grid-template-columns: 1fr">
+            <div class="metric" style="padding-left:0;border-left:0"><dt>Manual impact analysis, one year of change</dt><dd class="v">972 hrs</dd></div>
+            <div class="metric" style="padding-left:0;border-left:0"><dt>With Burst, including human review</dt><dd class="v"><span class="acc">~133</span> hrs</dd></div>
+          </dl>
+          <div class="card" style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap"><img src="/uxportfolio/img/pb-mortgagepoint.png" alt="MortgagePoint" width="180" height="36" loading="lazy" style="height:36px;width:auto;background:#fff;border-radius:6px;padding:4px 8px"><p class="body-sm" style="margin:0">Tech Excellence Award, 2025 and 2026. In production at Cenlar.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="grid g2">
+        <div class="card"><span class="eyebrow">Where AI helped</span><p class="body-sm">Reading, comparing and drafting at a volume no team could keep up with by hand.</p></div>
+        <div class="card"><span class="eyebrow violet">Where people stayed in charge</span><p class="body-sm">Interpreting the rule, approving the change and owning the risk.</p></div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head">
+        <span class="eyebrow">Where AI fits</span>
+        <h3>Four layers of any AI-enabled experience</h3>
+      </div>
+      <div class="table-wrap" role="region" aria-labelledby="four-cap" tabindex="0">
+        <table>
+          <caption id="four-cap">The customer only sees the outer layer. It's only as good as what's underneath.</caption>
+          <thead><tr><th scope="col">Layer</th><th scope="col">What AI can do</th><th scope="col">Where I've done it</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Engagement<small>Where the relationship lives</small></th><td>Meet people where they are, on web, mobile, text and video, with one consistent story.</td><td><b>Omnichannel servicing:</b> 20% → ~60% digital adoption across 200K+ accounts</td></tr>
+            <tr><th scope="row">Intelligence<small>Understand, guide, anticipate</small></th><td>Read intent and turn it into guidance: the right option, the real trade-offs, context carried forward.</td><td><b>Moment-based messaging:</b> the right message for the customer's actual situation</td></tr>
+            <tr><th scope="row">Work<small>Orchestrate what happens next</small></th><td>Let AI do the prep work (gathering, comparing, drafting) while a person approves the decision.</td><td><b>Phoenix Burst:</b> GenAI reads new rules, a person reviews</td></tr>
+            <tr><th scope="row">Record<small>Protect the trusted truth</small></th><td>Keep one trusted record underneath, so every channel, role and AI tool works from the same facts.</td><td><b>Role-based workspaces:</b> one record, a view per role, cycle time down 10 days</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK -->
+  <section class="section shell" id="work" aria-labelledby="work-title">
+    <div class="section-head chapter-head">
+      <span class="eyebrow">Selected work</span>
+      <h2 id="work-title">The four habits, in practice.</h2>
+      <p class="lead">Earlier work at Guild and PHH, both large lenders. The industry was financial services; the problems were universal: fragmented systems, handoffs between people, and customers who didn't know what happened next.</p>
+    </div>
+
+    <div class="sub" id="work-research">
+      <div class="sub-head">
+        <span class="eyebrow">01 / See the work · Research</span>
+        <h3>We followed one live case for 64 days and logged every touch</h3>
+        <p class="body">Interviews, shadowing, time-and-motion and click-path studies, plus an audit of 15 years of tools. The finding: the biggest delays were handoffs between people. No single screen fix would solve that, so we redesigned around the tasks people actually do.</p>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/journey-map.jpg" alt="Current-state journey map showing systems, handoffs and repeated rework loops." width="1800" height="335" loading="lazy"></div><figcaption><b>Current-state journey.</b> Every rework loop added about five days of waiting.</figcaption></figure>
+      <div class="grid g2" style="margin-top: var(--space-6)">
+        <figure><div class="frame"><img src="/portfolio/img/loan-log-1.jpg" alt="Day-by-day log of a live case with good and bad touchpoints marked and annotated findings." width="1572" height="1034" loading="lazy"></div><figcaption>The day-by-day log: what helped, what hurt and why.</figcaption></figure>
+        <figure><div class="frame"><img src="/portfolio/img/war-room.jpg" alt="Collage of war-room walls: journey maps, sticky-note clusters, whiteboard sketches and a design review." width="1800" height="785" loading="lazy"></div><figcaption>The whole problem on the wall, so executives, operators and engineers saw the same picture.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="sub" id="work-prototype">
+      <div class="sub-head">
+        <span class="eyebrow">02 / Make it tangible · Prototyping</span>
+        <h3>From sketch to a workspace people asked for</h3>
+        <p class="body">I start with the roughest version that gets us to the next decision, then raise fidelity as the questions get sharper. Here, a field-heavy legacy screen became a role-based workspace that showed status, priority and the next action.</p>
+      </div>
+      <ol class="fidelity" aria-label="Fidelity ladder"><li><span>Napkin</span></li><li><span>Sketch</span></li><li><span>Low fidelity</span></li><li><span>High fidelity</span></li><li><span>Working code</span></li></ol>
+      <figure style="margin-top: var(--space-6)"><div class="frame"><img src="/portfolio/img/sketch-wireframe.jpg" alt="Pencil sketches of a homepage beside the low-fidelity wireframes they became." width="1800" height="584" loading="lazy"></div><figcaption><b>Sketch → wireframe.</b> The same page, from pencil to structure.</figcaption></figure>
+      <div class="grid g3" style="margin-top: var(--space-6)">
+        <figure><span class="eyebrow muted ba-label">Before · Legacy</span><div class="frame"><img src="/portfolio/img/los-before.jpg" alt="Legacy screen: dense unstructured fields with a row of buttons at the bottom." width="1120" height="1025" loading="lazy"></div></figure>
+        <figure><span class="eyebrow ba-label">After · Redesign</span><div class="frame"><img src="/portfolio/img/los-after.jpg" alt="Redesigned overview with a stage tracker and grouped panels." width="818" height="1362" loading="lazy"></div></figure>
+        <figure><span class="eyebrow violet ba-label">Users, live</span><div class="frame"><img src="/portfolio/img/lo-feedback.jpg" alt="Chat feedback from users, including 'PHENOMENAL time saver!'" width="927" height="1370" loading="lazy"></div></figure>
+      </div>
+    </div>
+
+    <div class="sub" id="work-systems">
+      <div class="sub-head">
+        <span class="eyebrow">03 / Scale it · Design systems</span>
+        <h3>One design system, from tokens to full screens</h3>
+        <p class="body">Tokens → components → patterns → templates → features. Twelve product teams and 100+ developers built from the same parts. The same approach moved 100+ one-off client websites onto one governed, responsive template: up to 5× page views and ~2× lead conversion on selected sites.</p>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/design-system.jpg" alt="Design system overview: tokens, components, patterns and modules, with example boards." width="1800" height="656" loading="lazy"></div><figcaption>Ions (tokens), atoms (components), molecules (patterns), organisms (modules and features).</figcaption></figure>
+      <figure style="margin-top: var(--space-6)"><div class="frame"><img src="/portfolio/img/client-sites.jpg" alt="Inconsistent legacy client websites giving way to a consistent responsive template on three laptops." width="1800" height="1020" loading="lazy"></div><figcaption>From one-off sites to one responsive, governed template.</figcaption></figure>
+    </div>
+
+    <div class="sub" id="work-channels">
+      <div class="sub-head">
+        <span class="eyebrow">04 / The whole relationship · Omnichannel</span>
+        <h3>The right message for the moment, on every channel</h3>
+        <p class="body">One message carried through SMS, email, web and mobile, tied to what was actually happening for the customer: paid, due or late. Digital adoption tripled across 200K+ accounts, and print, mail and call volume dropped with it.</p>
+      </div>
+      <figure><div class="frame"><img src="/portfolio/img/paperless-screens.jpg" alt="Web and mobile screens: welcome to My Account, go paperless, and enroll in text message updates." width="1800" height="770" loading="lazy"></div><figcaption>Welcome, go paperless, text updates: the same story on web and mobile.</figcaption></figure>
+      <div class="grid g3" style="margin-top: var(--space-6)">
+        <div class="moment mint"><span class="eyebrow muted">When · payment posts</span><p class="h4">Received</p><p class="body-sm">Confirm receipt. Remove uncertainty.</p><q>"We've got it. Your payment posted on [date]."</q></div>
+        <div class="moment violet"><span class="eyebrow muted">When · due date passes</span><p class="h4">Past due</p><p class="body-sm">Acknowledge the issue. Surface help.</p><q>"Your payment is late. We're here to help, and you have options."</q></div>
+        <div class="moment acc"><span class="eyebrow muted">When · before the due date</span><p class="h4">Due</p><p class="body-sm">Clarify amount and timing. One clear action.</p><q>"Your [amount] payment is due [date]."</q></div>
+      </div>
+      <figure style="margin-top: var(--space-6)"><div class="frame"><img src="/portfolio/img/guild-to-go.jpg" alt="Seven mobile app screens: login, map, referral, client list, progress tracking and on-demand letters." width="1800" height="433" loading="lazy"></div><figcaption><b>Guild to Go.</b> A mobile app that gave partners documents on demand and gave sales teams their weekends back.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- CAREER -->
+  <section class="section shell" id="career" aria-labelledby="career-title">
+    <div class="section-head">
+      <span class="eyebrow">Career</span>
+      <h2 id="career-title">From designer to product and transformation executive</h2>
+      <p class="body">Each step added scope, because I kept learning and kept embracing what was new, from Lean Six Sigma to AI. The scope changed. The maker instinct never did.</p>
+    </div>
+    <div class="split">
+      <ol class="timeline" aria-label="Roles, most recent first">
+        <li><span class="when">Jun 2026 – Sep 2026</span><span class="role">SVP, Technology &amp; Product</span><span class="org">Kind Lending · Irvine, CA</span></li>
+        <li><span class="when">Feb 2024 – May 2026</span><span class="role">Head of Product Strategy</span><span class="org">Phoenix Burst · Arlington, VA</span></li>
+        <li><span class="when">2020 – 2024</span><span class="role">VP, Enterprise Product Management &amp; Digital Strategy</span><span class="org">Guild Mortgage · San Diego, CA</span></li>
+        <li><span class="when">2017 – 2020</span><span class="role">VP, Experience Design &amp; Digital Strategy</span><span class="org">Guild Mortgage · San Diego, CA</span></li>
+        <li><span class="when">2015 – 2017</span><span class="role">Director, Application Development — Design &amp; Requirements</span><span class="org">PHH Mortgage · Mount Laurel, NJ</span></li>
+        <li><span class="when">2011 – 2015</span><span class="role">Director, Operational Excellence &amp; Customer Experience</span><span class="org">PHH Mortgage · Mount Laurel, NJ</span></li>
+        <li><span class="when">2008 – 2011</span><span class="role">Manager, eBusiness &amp; Innovation</span><span class="org">PHH Mortgage · Mount Laurel, NJ</span></li>
+        <li><span class="when">1997 – 2008</span><span class="role">Founder, PixelSharks · Design Director, MarketSource / TapOnline</span><span class="org">Digital design and information architecture</span></li>
+      </ol>
+      <div class="stack-lg">
+        <div class="acc-list">
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="true" aria-controls="p-pb" id="b-pb"><span>Phoenix Burst<small>Head of Product Strategy</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-pb" role="region" aria-labelledby="b-pb"><ul><li>Shaped discovery and product vision for a GenAI-native regulatory compliance platform; identified enterprise use cases with Wells Fargo and Cenlar and designed human-in-the-loop review and exception workflows.</li><li>Partnered with engineering to translate regulatory change into traceable requirements, user stories and test cases; contributed to launch and production adoption at Cenlar.</li><li>Applied AI-assisted discovery, structured prompts and rapid prototyping to accelerate use-case exploration, interaction design and validation of intelligent workflows.</li></ul></div></div>
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="false" aria-controls="p-kind" id="b-kind"><span>Kind Lending<small>SVP, Technology &amp; Product</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-kind" role="region" aria-labelledby="b-kind" hidden><ul><li>Led Product Management, Business Analysis, QA and UX across retail and wholesale platforms; assessed product strategy, delivery practices and organizational capabilities.</li><li>Presented a 6-, 12- and 24-month modernization roadmap to ownership; established an executive IT Steering Committee to strengthen governance and prioritization.</li></ul></div></div>
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="false" aria-controls="p-guild" id="b-guild"><span>Guild Mortgage<small>VP roles, 2017 – 2024</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-guild" role="region" aria-labelledby="b-guild" hidden><ul><li>Established Guild's formal UX, experience design and user research capabilities; led digital point-of-sale experiences and conceived Guild to Go.</li><li>Recruited three functional directors and built management depth across Product, UX, Research, BA, Analytics, Lean and Agile, scaling 12 business-aligned teams within a 75-person organization.</li><li>Chaired the executive IT Steering Committee with the CEO, President and C-level executives as voting members; directed a $20M+ annual modernization portfolio and accelerated major releases from months to weeks.</li><li>Grew paperless adoption from ~20% to nearly 60% across 200K+ customer accounts while retention exceeded 70%.</li></ul></div></div>
+          <div class="acc-item"><h3><button class="acc-trigger" type="button" aria-expanded="false" aria-controls="p-phh" id="b-phh"><span>PHH Mortgage<small>Manager to Director, 2008 – 2017</small></span><span class="acc-icon" aria-hidden="true"></span></button></h3>
+            <div class="acc-panel" id="p-phh" role="region" aria-labelledby="b-phh" hidden><ul><li>Led discovery, UX, requirements, UAT and validation within a $100M technology portfolio, aligning Technology, Operations and Compliance.</li><li>Directed a 64-day live-case study, time-and-motion research and systems audits to find rework, duplicate reviews and handoff delays.</li><li>Redesigned the core platform into connected, role-specific workspaces and helped cut cycle time by 10 days.</li><li>Established a $5M innovation lab applying Lean UX, Agile, rapid prototyping and functional first builds.</li><li>Consolidated thousands of sites onto Adobe Experience Manager; selected sites achieved up to 5× page views and ~2× lead conversion. Launched the company's first mobile app.</li></ul></div></div>
+        </div>
+        <div class="card"><span class="eyebrow muted">Education</span><p class="body-sm">BFA, Interaction Design — The College of New Jersey<br>Graphic Design Studies — NC State University<br>Lean Six Sigma Black Belt</p></div>
+        <div class="stack"><span class="eyebrow muted">Practice areas</span><ul class="tags"><li class="tag acc">User research</li><li class="tag acc">Interaction design</li><li class="tag acc">Design systems</li><li class="tag acc">Human-in-the-loop AI</li><li class="tag">Product strategy</li><li class="tag">Service design</li><li class="tag">Org leadership</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING / CONTACT -->
+  <section class="section shell closing" id="contact" aria-labelledby="close-title">
+    <div class="reading">
+      <span class="eyebrow">The takeaway</span>
+      <h2 id="close-title">Complex work will always be complex.<span>My job is to make it feel simple.</span></h2>
+      <p class="lead">From the 30,000-foot vision to the final pixel: the product, the AI workflow, the message and the human moment, designed as one experience.</p>
+      <p class="feelings">Known. Supported. Confident. Cared for. Well-served. Wow'd.</p>
+    </div>
+    <div class="contact">
+      <div class="card"><span class="eyebrow">Email</span><div class="val"><span id="email">jeremysromano@gmail.com</span><button class="btn copy" type="button" data-copy="email">Copy</button></div></div>
+      <div class="card"><span class="eyebrow">LinkedIn</span><div class="val"><a href="https://www.linkedin.com/in/jeremyromano" target="_blank" rel="noopener noreferrer">linkedin.com/in/jeremyromano<span class="vh"> (opens in a new tab)</span></a></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="shell footer__inner">
+    <span>Jeremy Romano · UX, Product, AI</span>
+    <span>Results delivered with the teams I led and the business partners we worked alongside.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  // Theme toggle
+  var themeBtn = document.getElementById('theme-btn');
+  function currentTheme() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  function syncThemeBtn() { themeBtn.textContent = currentTheme() === 'dark' ? 'Light' : 'Dark'; }
+  themeBtn.addEventListener('click', function () {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('jr-theme', next); } catch (e) {}
+    syncThemeBtn();
+  });
+  try { var saved = localStorage.getItem('jr-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  syncThemeBtn();
+
+  // Mobile menu
+  var header = document.querySelector('.header');
+  var menuBtn = document.getElementById('menu-btn');
+  menuBtn.addEventListener('click', function () {
+    var open = header.classList.toggle('is-open');
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.textContent = open ? 'Close' : 'Menu';
+  });
+  document.querySelectorAll('.nav a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      header.classList.remove('is-open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.textContent = 'Menu';
+    });
+  });
+
+  // Current section in nav
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var map = { 'results': 'results', 'how-i-work': 'how-i-work', 'ai': 'ai', 'phoenix-burst': 'ai', 'work': 'work', 'career': 'career', 'contact': 'contact' };
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var target = map[en.target.id];
+        links.forEach(function (l) { if (l.getAttribute('href') === '#' + target) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current'); });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
+  }
+
+  // Accordion
+  document.querySelectorAll('.acc-trigger').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      document.getElementById(btn.getAttribute('aria-controls')).hidden = open;
+    });
+  });
+
+  // Copy email
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.getAttribute('data-copy'));
+      var text = el.textContent;
+      function selectIt() { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected'; }
+      try {
+        navigator.clipboard.writeText(text).then(function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); }, selectIt);
+      } catch (e) { selectIt(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
