@@ -301,6 +301,18 @@ td b { color: var(--color-text); font-weight: 600; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+/* Heartbeat accent on "heart" in the tagline */
+:root { --color-heart: #fb7185; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --color-heart: #e11d48; } }
+:root[data-theme="light"] { --color-heart: #e11d48; }
+.heart { display: inline-block; margin-inline: .12em .04em; color: var(--color-heart); font-weight: 600; transform-origin: center 60%; animation: heartbeat 1.6s ease-in-out infinite; }
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); text-shadow: none; }
+  14% { transform: scale(1.12); text-shadow: 0 0 14px color-mix(in srgb, var(--color-heart) 60%, transparent); }
+  28% { transform: scale(1); text-shadow: none; }
+  42% { transform: scale(1.06); text-shadow: 0 0 10px color-mix(in srgb, var(--color-heart) 40%, transparent); }
+  70% { transform: scale(1); text-shadow: none; }
+}
 </style>
 </head>
 <body>
@@ -329,7 +341,7 @@ td b { color: var(--color-text); font-weight: 600; }
       <span class="eyebrow">UX · Product · AI</span>
       <h1 id="hero-title"><span>Complex work will always be complex.</span><span class="dim">My job is to make it feel simple.</span></h1>
       <p class="lead">I lead design and product teams that turn complicated, high-stakes workflows into experiences people understand and trust. More and more, that means AI does the heavy lifting while people keep the judgment.</p>
-      <p class="tagline">Designer at heart. Systems thinker by nature.<br>Product and transformation <span style="white-space: nowrap">executive by trade.</span></p>
+      <p class="tagline">Designer at <span class="heart">heart</span>. Systems thinker by nature.<br>Product and transformation <span style="white-space: nowrap">executive by trade.</span></p>
       <div class="actions">
         <a class="btn btn--primary" href="#ai">See the AI work</a>
         <a class="btn" href="#how-i-work">How I work</a>
